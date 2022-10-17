@@ -375,7 +375,7 @@ const commands = {
             TerminalUI.pushLine("Please consider reaching out!");
             Terminal.execute("contact");
             TerminalUI.finish();
-            TerminalUI.pushLine("[Process Completed]");
+            TerminalUI.pushLine("[Process completed]");
             TerminalUI.close();
         }
     }
