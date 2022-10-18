@@ -242,7 +242,7 @@ const commands = {
         }
     },
     "email": {
-        paramDesc: "\t\t",
+        paramDesc: "\t",
         desc: "Begins a draft addressed to my primary email.",
         action: function(args) {
             window.open("mailto: " + EMAIL, "__blank");
