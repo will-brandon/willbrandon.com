@@ -24,7 +24,7 @@ div#terminal-container {
 
 div#terminal-wrapper {
 	display: block;
-	padding: 10px;
+	padding: 20px;
 }
 
 img {
@@ -52,7 +52,7 @@ div.line pre {
 	margin: 0px;
 	padding: 0px;
 	font-family: 'Roboto Mono', sans-serif;
-	font-size: 16px;
+	font-size: 18px;
 	color: #d9d6d4;
 }
 
@@ -84,8 +84,8 @@ div.line pre span.ansi-soft-blue {
 	color: #abcfff;
 }
 
-div.line pre span.ansi-yellow {
-	color: #e5b61e;
+div.line pre span.ansi-soft-grey {
+	color: #a6a6a6;
 }
 
 div.line pre span.ansi-sage {
@@ -109,7 +109,7 @@ input#shell-input {
 	background-color: #00000000;
 	outline: none;
 	font-family: 'Roboto Mono', sans-serif;
-	font-size: 16px;
+	font-size: 18px;
 	color: #d9d6d4;
 	overflow: hidden;
 	white-space: nowrap;

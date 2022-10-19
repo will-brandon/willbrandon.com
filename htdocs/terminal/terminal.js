@@ -29,18 +29,21 @@ class TerminalUI {
         };
         elements.promptSpan.innerHTML = PROMPT_HTML;
         elements.shellInput.addEventListener("keypress", this.shellInputKeyDown);
-        elements.shellInput.focus();
 
         this.finish(); // Inits TerminalUI.currentLine
 
         this.resizeShellInput();
 
         Terminal.execute("welcome");
+
         this.scrollToBottom();
+        elements.shellInput.focus();
+
+        return this;
     }
 
     static resizeShellInput() {
-        const newWidth = elements.container.offsetWidth - elements.promptSpan.offsetWidth - 30;
+        const newWidth = elements.container.offsetWidth - elements.promptSpan.offsetWidth - 50;
         elements.shellInput.style.width = newWidth + "px";
     }
 
@@ -55,12 +58,18 @@ class TerminalUI {
         elements.wrapper.innerHTML = "";
         elements.wrapper.append(elements.currentLine);
         elements.shellInput.focus();
+
+        return this;
     }
 
-    static push(text = "", color = "default", href= null, action = null) {
+    static push(text = "", color = "default", href= null, newTab=false, action = null) {
         this.workingLine += '<span class="ansi-' + color + '"\>';
         if (href != null) {
             this.workingLine += '<a href="' + href;
+
+            if (newTab) {
+                this.workingLine += '" target="_blank"';
+            }
 
             if (action != null) {
                 this.workingLine += '" onclick="' + action;
@@ -71,6 +80,8 @@ class TerminalUI {
             this.workingLine += text;
         }
         this.workingLine += '</span>';
+
+        return this;
     }
 
     static finish() {
@@ -83,16 +94,33 @@ class TerminalUI {
                 elements.currentLine.remove();
                 elements.wrapper.innerHTML += this.workingLine + '</span></div>';
                 elements.wrapper.append(elements.currentLine);
-                elements.shellInput.focus();
             }
         }
 
         this.workingLine = '<div class="line"><pre>';
+
+        return this;
     }
 
-    static pushLine(line = "", color = "default", href = null, action = null) {
-        this.push(line, color, href, action);
+    static pushLine(line = "", color = "default", href = null, newTab=false, action = null) {
+        this.push(line, color, href, newTab, action);
         this.finish();
+
+        return this;
+    }
+
+    static pushCommandLink(text, command=text) {
+        // The text is the command by default
+        const action = "TerminalUI.executeAutomaticDecorated('" + command + "');";
+        this.push(text, "default", "#", false, action);
+
+        return this;
+    }
+
+    static pushLink(text, url) {
+        this.push(text, "blue", url, true);
+
+        return this;
     }
 
     static submit() {
@@ -101,10 +129,15 @@ class TerminalUI {
         elements.shellInput.value = "";
 
         this.scrollToBottom();
+        elements.shellInput.focus();
+
+        return this;
     }
 
     static close() {
         elements.currentLine.remove();
+
+        return this;
     }
 
     static enterImageMode(url) {
@@ -119,21 +152,30 @@ class TerminalUI {
         elements.wrapper.append(this.imageDetailElement);
 
         elements.wrapper.append(elements.currentLine);
+        this.scrollToBottom();
+
+        return this;
     }
 
     static exitImageMode() {
         this.imageDetailElement = null;
+
+        return this;
     }
 
     static scrollToBottom() {
         if (elements.wrapper.offsetHeight > elements.container.offsetHeight) {
             elements.container.scrollTo({top: elements.wrapper.offsetHeight - elements.container.offsetHeight});
         }
+
+        return this;
     }
 
     static executeAutomaticDecorated(line) {
         elements.shellInput.value = line;
         this.submit();
+
+        return this;
     }
 
 }
@@ -161,80 +203,166 @@ class Terminal {
 
 const commands = {
     "about": {
-        paramDesc: "\t",
+        paramDesc: "\t ",
         desc: "Gives a brief summary of myself and my experience.",
         action: function(args) {
+            if (args.length > 0) {
+                TerminalUI.pushLine("The 'about' program takes 0 arguments.", "red");
+                return;
+            }
+
             TerminalUI.enterImageMode("../resources/will.jpg");
-            TerminalUI.pushLine("Will Brandon", "light-blue");
 
-            TerminalUI.pushLine();
+            TerminalUI.pushLine("Will Brandon", "light-blue").pushLine();
 
-            TerminalUI.pushLine("I am studying Computer Science at Northeastern");
-            TerminalUI.pushLine("University.");
-
+            TerminalUI.pushLine("I am studying Computer Science at Northeastern").pushLine("University.");
             TerminalUI.pushLine();
 
             TerminalUI.pushLine("I have a lot of experience with web development,");
             TerminalUI.pushLine("mainly through personal projects. This site is");
-
-            TerminalUI.push("hosted on a ");
-            TerminalUI.push("Linux Apache server", "blue", "https://httpd.apache.org/");
-            TerminalUI.push(" that I maintain.");
-            TerminalUI.finish();
-            TerminalUI.pushLine();
+            TerminalUI.push("hosted on a ").pushLink("Linux Apache server", "https://httpd.apache.org/");
+            TerminalUI.push(" that I maintain.").finish().pushLine();
 
             TerminalUI.pushLine("I also develop iOS applications in Swift, and ");
-            TerminalUI.pushLine("desktop applications in Java and C++.");
-
-            TerminalUI.pushLine();
+            TerminalUI.pushLine("desktop applications in Java and C++.").pushLine();
 
             TerminalUI.pushLine("For more skills and projects, please see ");
-            TerminalUI.push("my resume and GitHub. (type '");
-            TerminalUI.push("resume", "default", "#", "TerminalUI.executeAutomaticDecorated('resume');");
-            TerminalUI.push("' or '");
-            TerminalUI.push("github", "default", "#", "TerminalUI.executeAutomaticDecorated('github');");
-            TerminalUI.push("')");
-            TerminalUI.finish();
+            TerminalUI.push("my resume and GitHub. (type '").pushCommandLink("resume");
+            TerminalUI.push("' or '").pushCommandLink("github").push("')").finish();
 
             TerminalUI.exitImageMode();
         }
     },
+    "projects": {
+        paramDesc: "\t ",
+        desc: "Shows a list of my projects as well as relevant links.",
+        action: function(args) {
+            if (args.length > 0) {
+                TerminalUI.pushLine("The 'projects' program takes 0 arguments.", "red");
+                return;
+            }
+
+            TerminalUI.pushLine().pushLine().pushLine("- PROJECTS -", "blue").pushLine().pushLine();
+
+            Object.keys(projects).forEach(projectName => {
+                const project = projects[projectName];
+                const descriptionLines = project.descriptionLines;
+                const skills = project.skills;
+
+                TerminalUI.push("  " + project.displayName, "soft-blue").push(descriptionLines[0]).finish();
+
+                for (let i = 1; i < descriptionLines.length; i++) {
+                    TerminalUI.pushLine("\t\t" + descriptionLines[i]);
+                }
+
+                TerminalUI.pushLine();
+
+                TerminalUI.push("\t\tSkills: ");
+
+                for (let i = 0; i < skills.length; i++) {
+                    TerminalUI.push(skills[i], "aqua");
+
+                    if (i < skills.length - 1) {
+                        TerminalUI.push(", ");
+                    }
+                }
+
+                TerminalUI.finish();
+
+                TerminalUI.pushLine();
+                TerminalUI.push("\t\tType '", "light-blue").pushCommandLink("project " + projectName);
+                TerminalUI.push("' to view the project", "light-blue").finish();
+
+                TerminalUI.pushLine().pushLine().pushLine();
+            });
+        }
+    },
+    "project": {
+        paramDesc: "[name] ",
+        desc: "Opens the given project in a new tab.",
+        action: function(args) {
+            if (args.length < 1) {
+                TerminalUI.pushLine("The 'project' program requires a project name argument.", "red");
+                return;
+            } else if (args.length > 1) {
+                TerminalUI.pushLine("The 'project' program only takes 1 argument.", "red");
+                return;
+            }
+
+            const projectName = args[0].toLowerCase();
+
+            if (projects.hasOwnProperty(projectName)) {
+                window.open(projects[projectName].link, "__blank");
+            } else {
+                TerminalUI.pushLine();
+                TerminalUI.pushLine("I don't have a project called '" + projectName + "'. Sorry.", "red");
+                TerminalUI.pushLine().pushLine("Try one of these:", "light-blue").pushLine();
+
+                Object.keys(projects).forEach(projectName => {
+                    TerminalUI.push("  " + projects[projectName].displayName, "soft-blue");
+                    TerminalUI.push(" type ").pushCommandLink("project " + projectName).finish();
+                });
+
+                TerminalUI.pushLine();
+            }
+        }
+    },
     "resume": {
-        paramDesc: "\t",
+        paramDesc: "\t ",
         desc: "Opens my resume in a new tab.",
         action: function(args) {
+            if (args.length > 0) {
+                TerminalUI.pushLine("The 'resume' program takes 0 arguments.", "red");
+                return;
+            }
+
             window.open(RESUME_URL, "__blank");
         }
     },
     "linkedin": {
-        paramDesc: "\t",
+        paramDesc: "\t ",
         desc: "Opens my LinkedIn profile in a new tab.",
         action: function(args) {
+            if (args.length > 0) {
+                TerminalUI.pushLine("The 'linkedin' program takes 0 arguments.", "red");
+                return;
+            }
+
             window.open(LINKEDIN_URL, "__blank");
         }
     },
     "github": {
-        paramDesc: "\t",
+        paramDesc: "\t ",
         desc: "Opens my GitHub in a new tab.",
         action: function(args) {
+            if (args.length > 0) {
+                TerminalUI.pushLine("The 'github' program takes 0 arguments.", "red");
+                return;
+            }
+
             window.open(GITHUB_URL, "__blank");
         }
     },
     "contact": {
-        paramDesc: "\t",
+        paramDesc: "\t ",
         desc: "Displays my contact information.",
         action: function(args) {
+            if (args.length > 0) {
+                TerminalUI.pushLine("The 'contact' program takes 0 arguments.", "red");
+                return;
+            }
+
             TerminalUI.pushLine();
 
-            TerminalUI.push("Phone\t", "soft-blue");
+            TerminalUI.push("Phone\t");
             TerminalUI.push(PHONE_NUMBER);
             TerminalUI.finish();
 
-            TerminalUI.push("Email\t", "soft-blue");
+            TerminalUI.push("Email\t");
             TerminalUI.push(EMAIL);
             TerminalUI.finish();
 
-            TerminalUI.push("Mail\t", "soft-blue");
+            TerminalUI.push("Mail\t");
             TerminalUI.push(MAILING_ADDRESS);
             TerminalUI.finish();
 
@@ -242,61 +370,58 @@ const commands = {
         }
     },
     "email": {
-        paramDesc: "\t",
+        paramDesc: "\t ",
         desc: "Begins a draft addressed to my primary email.",
         action: function(args) {
+            if (args.length > 0) {
+                TerminalUI.pushLine("The 'email' program takes 0 arguments.", "red");
+                return;
+            }
+
             window.open("mailto: " + EMAIL, "__blank");
         }
     },
     "help": {
-        paramDesc: "\t\t",
+        paramDesc: "\t\t ",
         desc: "Displays available commands.",
         action: function(args) {
+            if (args.length > 0) {
+                TerminalUI.pushLine("The 'help' program takes 0 arguments.", "red");
+                return;
+            }
 
             TerminalUI.pushLine();
-            TerminalUI.pushLine("  Try typing (or clicking) some of these commands:", "blue");
+            TerminalUI.pushLine("Type or click some of these commands:", "light-blue");
             TerminalUI.pushLine();
 
-            TerminalUI.push("  ");
-            TerminalUI.push("about", "default", "#", 'TerminalUI.executeAutomaticDecorated(\'about\');');
-            TerminalUI.finish();
-
-            TerminalUI.push("  ");
-            TerminalUI.push("linkedin", "default", "#", 'TerminalUI.executeAutomaticDecorated(\'linkedin\');');
-            TerminalUI.finish();
-
-            TerminalUI.push("  ");
-            TerminalUI.push("github", "default", "#", 'TerminalUI.executeAutomaticDecorated(\'github\');');
-            TerminalUI.finish();
-
-            TerminalUI.push("  ");
-            TerminalUI.push("resume", "default", "#", 'TerminalUI.executeAutomaticDecorated(\'resume\');');
-            TerminalUI.finish();
+            TerminalUI.pushCommandLink("about").push("    ")
+            TerminalUI.pushCommandLink("projects").push("    ");
+            TerminalUI.pushCommandLink("linkedin").push("    ");
+            TerminalUI.pushCommandLink("github").push("    ");
+            TerminalUI.pushCommandLink("resume").finish();
 
             TerminalUI.pushLine();
-            TerminalUI.pushLine("  Or type 'man' for a brief manual of more commands.");
+            TerminalUI.push("Or type '").pushCommandLink("man");
+            TerminalUI.push("' for a brief manual of more commands.").finish();
             TerminalUI.pushLine();
         }
     },
     "man": {
-        paramDesc: "[command]\t",
+        paramDesc: "[commands] ",
         desc: "Displays available commands and descriptions.",
         action: function(args) {
 
             TerminalUI.pushLine();
 
             if (args.length === 0) {
-                TerminalUI.pushLine("  Manual", "blue");
-                TerminalUI.pushLine();
+                TerminalUI.pushLine("  Manual", "light-blue").pushLine();
 
                 args = Object.keys(commands);
             }
 
             args.forEach(arg => {
                 if (commands.hasOwnProperty(arg)) {
-                    TerminalUI.push("  " + arg);
-                    TerminalUI.push(" " + commands[arg].paramDesc);
-                    TerminalUI.push(commands[arg].desc);
+                    TerminalUI.push("  " + arg).push(" " + commands[arg].paramDesc).push(commands[arg].desc);
                     TerminalUI.finish();
                 } else {
                     TerminalUI.pushLine("Cannot get description of nonexistent command '" + arg + "'.", "red");
@@ -307,21 +432,31 @@ const commands = {
         }
     },
     "clear": {
-        paramDesc: "\t",
+        paramDesc: "\t ",
         desc: "Clears the console.",
         action: function(args) {
+            if (args.length > 0) {
+                TerminalUI.pushLine("The 'clear' program takes 0 arguments.", "red");
+                return;
+            }
+
             TerminalUI.clear();
         }
     },
     "whoami": {
-        paramDesc: "\t",
+        paramDesc: "\t ",
         desc: "Displays the active user.",
         action: function(args) {
+            if (args.length > 0) {
+                TerminalUI.pushLine("The 'whoami' program takes 0 arguments.", "red");
+                return;
+            }
+
             TerminalUI.pushLine(USER);
         }
     },
     "echo": {
-        paramDesc: "[...]\t",
+        paramDesc: "[strings] ",
         desc: "Prints the given strings to the console.",
         action: function(args) {
             if (args.length > 0) {
@@ -333,9 +468,14 @@ const commands = {
         }
     },
     "welcome": {
-        paramDesc: "\t",
+        paramDesc: "\t ",
         desc: "Displays the welcome message.",
         action: function(args) {
+            if (args.length > 0) {
+                TerminalUI.pushLine("The 'welcome' program takes 0 arguments.", "red");
+                return;
+            }
+
             TerminalUI.pushLine("===============================================================================");
             TerminalUI.pushLine();
 
@@ -353,32 +493,88 @@ const commands = {
 
             TerminalUI.push(" [[/  \\[[ [[ [[[[[[ [[[[[[", "light-blue");
             TerminalUI.push(" [[[[[/ [[   \\[ [[  [[ [[  \\[[ [[[[/  \\[[[[/ [[  \\[[", "sage");
-            TerminalUI.finish();
+            TerminalUI.finish().pushLine();
 
-            TerminalUI.pushLine();
             TerminalUI.pushLine("===============================================================================");
             TerminalUI.pushLine();
+
             TerminalUI.pushLine("Will Brandon", "blue");
             TerminalUI.pushLine("Northeastern University, Khoury College of Computer Sciences", "sage");
-            Terminal.execute("contact");
-            TerminalUI.pushLine("Welcome to my website, I'm so glad you're here!");
+
+            TerminalUI.pushLine().pushLine();
+
             Terminal.execute("help");
+
+            TerminalUI.pushLine();
         }
     },
     "exit": {
-        paramDesc: "\t\t",
+        paramDesc: "[code]\t ",
         desc: "Ends your shell session on my website. :(",
         action: function(args) {
-            TerminalUI.pushLine();
-            TerminalUI.pushLine("Goodbye. :(");
-            TerminalUI.pushLine("So sad to see you leaving already.");
+            if (args.length > 1) {
+                TerminalUI.pushLine("The 'exit' program only takes 1 argument.", "red");
+                return;
+            }
+
+            const exitCode = args.length == 1 ? parseInt(args[0]) : 0;
+
+            if (isNaN(exitCode)) {
+                TerminalUI.pushLine("Exit code must be an integer.", "red");
+                return;
+            }
+
+            TerminalUI.pushLine("Exiting with code: " + exitCode).pushLine();
+
+            TerminalUI.pushLine("Goodbye. :(").pushLine("So sad to see you leaving already.");
             TerminalUI.pushLine("Please consider reaching out!");
+
             Terminal.execute("contact");
-            TerminalUI.finish();
+
+            TerminalUI.push("Click ").push("this", "blue", "");
+            TerminalUI.push(" to use the site again.").finish().pushLine();
+
             TerminalUI.pushLine("[Process completed]");
+
             TerminalUI.close();
         }
     }
 }
+
+projects = {
+    "dayplans": {
+        link: "https://github.com/will-brandon/ios-dayplans",
+        displayName: "DayPlans\t",
+        skills: ["Swift Programming", "Xcode", "iOS development"],
+        descriptionLines: [
+            "An iOS application designed to for elaborate daily",
+            "schedules with notifications. It is a Google Calendar",
+            "alternative with support for more detailed automatic",
+            "scheduling options."
+        ]
+    },
+    "imgprocessor": {
+        link: "https://github.com/will-brandon/image-processor",
+        displayName: "ImgProcessor\t",
+        skills: ["Java", "JUnit Testing", "Object Oriented Design"],
+        descriptionLines: [
+            "An image processing application that supports both a",
+            "GUI mode and command line mode. Images can be imported,",
+            "filtered, and exported. (Think Photoshop but a bit",
+            "simpler.)"
+        ]
+    },
+    "arraydemo": {
+        link: "https://projects.wbrandon.com/arraydemo/",
+        displayName: "ArrayDemo\t",
+        skills: ["PHP", "HTML", "CSS", "JavaScript", "Apache Server", "Linux"],
+        descriptionLines: [
+            "A web tool I designed to be used by beginner programmers",
+            "to understand the concept of multidimensional arrays. My",
+            "high school computer science teacher still uses the tool",
+            "in her lectures every year."
+        ]
+    }
+};
 
 window.onload = Terminal.init;
