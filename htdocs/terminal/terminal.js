@@ -211,7 +211,7 @@ const commands = {
                 return;
             }
 
-            TerminalUI.enterImageMode("../resources/will.jpg");
+            TerminalUI.pushLine().pushLine().enterImageMode("../resources/will.jpg");
 
             TerminalUI.pushLine("Will Brandon", "light-blue").pushLine();
 
@@ -226,11 +226,11 @@ const commands = {
             TerminalUI.pushLine("I also develop iOS applications in Swift, and ");
             TerminalUI.pushLine("desktop applications in Java and C++.").pushLine();
 
-            TerminalUI.pushLine("For more skills and projects, please see ");
-            TerminalUI.push("my resume and GitHub. (type '").pushCommandLink("resume");
-            TerminalUI.push("' or '").pushCommandLink("github").push("')").finish();
+            TerminalUI.pushLine("For more skills and projects, please use ", "light-blue");
+            TerminalUI.push("the '", "light-blue").pushCommandLink("projects").push("' command.", "light-blue");
+            TerminalUI.finish();
 
-            TerminalUI.exitImageMode();
+            TerminalUI.exitImageMode().pushLine().pushLine();
         }
     },
     "projects": {
@@ -545,7 +545,7 @@ projects = {
     "dayplans": {
         link: "https://github.com/will-brandon/ios-dayplans",
         displayName: "DayPlans\t",
-        skills: ["Swift Programming", "Xcode", "iOS development"],
+        skills: ["Swift Programming", "Xcode", "iOS Development"],
         descriptionLines: [
             "An iOS application designed to for elaborate daily",
             "schedules with notifications. It is a Google Calendar",
