@@ -9,7 +9,7 @@ const elements = {
 const USER = "guest";
 const PROMPT_HTML = "<span class=\"ansi-aqua\">" + USER + "</span>@<span class=\"ansi-blue\">willbrandon.com</span>$ ";
 
-const RESUME_URL = "https://drive.google.com/file/d/1x-i1_DwD_A3AJ54ItALXxGCLJHtY5mfU/preview";
+const RESUME_URL = "https://docs.google.com/document/d/e/2PACX-1vQRo1lcrNcgOzPuwidMTrM_1SyVwC3aBgRBZMT3BMgYh7QjRy0ywUz2d2FCL4hGLPiSHMJq0xWsLdk4/pub";
 const LINKEDIN_URL = "https://www.linkedin.com/in/will-brandon/";
 const GITHUB_URL = "https://www.github.com/will-brandon/";
 const EMAIL = "brandon.w@northeastern.edu";
