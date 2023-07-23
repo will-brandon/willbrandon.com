@@ -1,13 +1,18 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/*
+ * index.css
+ *
+ * Type:    Cascading Style Sheet
+ * Author:  Will Brandon
+ * Created: July 21, 2023
+ *
+ * Provides styles for the primary index elements of my personal website React app.
+ */
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+html, body, div#root
+{
+  display: block;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-size: 0;
 }

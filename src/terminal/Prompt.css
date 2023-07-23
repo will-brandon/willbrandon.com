@@ -1,0 +1,58 @@
+/*
+ * Prompt.css
+ *
+ * Type:    Cascading Style Sheet
+ * Author:  Will Brandon
+ * Created: July 21, 2023
+ *
+ * Provides styles for the terminal prompt React component.
+ */
+
+/* Grab the Roboto font from Google Fonts. */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+div.terminal-prompt
+{
+    display: block;
+    font-size: 0;
+    white-space: nowrap;
+}
+
+div.terminal-prompt div.message pre
+{
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    font-size: 18px;
+    font-family: 'Roboto Mono', sans-serif;
+    color: #d9d6d4;
+}
+
+div.terminal-prompt div.message
+{
+    display: inline-block;
+}
+
+div.terminal-prompt div.message pre.user
+{
+    color: #34d6b6;
+}
+
+div.terminal-prompt div.message pre.host
+{
+    color: #67beff;
+}
+
+div.terminal-prompt input
+{
+    display: inline-block;
+    padding: 0;
+    border: none;
+    margin: 0;
+    background-color: transparent;
+    font-size: 18px;
+    font-family: 'Roboto Mono', sans-serif;
+    outline: none;
+    color: #d9d6d4;
+    caret-color: #d9d6d4;
+}

@@ -1,0 +1,22 @@
+/*
+ * Terminal.css
+ *
+ * Type:    Cascading Style Sheet
+ * Author:  Will Brandon
+ * Created: July 21, 2023
+ *
+ * Provides styles for the terminal React component.
+ */
+
+div.terminal
+{
+    display: block;
+    height: 100%;
+    padding: 20px;
+    overflow: scroll;
+    background-color: #212121;
+    font-size: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: text;
+}
