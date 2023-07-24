@@ -1,0 +1,14 @@
+/*
+ * @file  Terminal.css
+ *
+ * @filetype  Cascading Style Sheet
+ * @author    Will Brandon
+ * @created   July 23, 2023
+ *
+ * @description Styles for the a simulated Linux terminal..
+ */
+
+div.terminal
+{
+  background-color: #212121;
+}

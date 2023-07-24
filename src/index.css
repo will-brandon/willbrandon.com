@@ -1,9 +1,9 @@
 /*
  * @file  index.css
  *
- * @type    Cascading Style Sheet
- * @author  Will Brandon
- * @created July 23, 2023
+ * @filetype  Cascading Style Sheet
+ * @author    Will Brandon
+ * @created   July 23, 2023
  *
  * @description Styles for the main components of the homepage.
  */
@@ -11,6 +11,7 @@
 html, body, div#root
 {
   display: block;
+  height: 100%;
   padding: 0;
   margin: 0;
   overflow: hidden;

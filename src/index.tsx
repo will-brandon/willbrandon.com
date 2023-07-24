@@ -1,9 +1,9 @@
 /**
  * @file  index.tsx
  *
- * @type    XML-Friendly Typescript
- * @author  Will Brandon
- * @created July 23, 2023
+ * @filetype  XML-Friendly Typescript
+ * @author    Will Brandon
+ * @created   July 23, 2023
  *
  * @description Main index page for my personal home page.
  */
