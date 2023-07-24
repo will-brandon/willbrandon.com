@@ -5,13 +5,13 @@
  * @author    Will Brandon
  * @created   July 23, 2023
  *
- * @description Defines a class that represents a stream of React elements.
+ * @description Defines a class that represents a buffered stream of React elements.
  */
 
 import { ReactElement } from 'react';
 
 /**
- * @description Represents a stream of React elements.
+ * @description Represents a buffered stream of React elements.
  */
 class ElementStream
 {
@@ -30,7 +30,8 @@ class ElementStream
 
   /**
    * @description Renders the entire concatenated buffer of React elements to a single element.
-   * @return a React element containing all the buffer elements
+   *
+   * @return  a React element containing all the buffer elements
    */
   public render(): ReactElement
   {
@@ -51,6 +52,7 @@ class ElementStream
 
   /**
    * @description Pushes a new React element to the buffer.
+   * 
    * @param element the new React element
    */
   public push(element: ReactElement): void

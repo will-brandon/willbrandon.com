@@ -15,15 +15,48 @@ import ElementStream from './../../util/ElementStream';
  */
 class Shell
 {
+  /**
+   * @description The stream of React elements that the shell has output.
+   */
   private readonly elementStream: ElementStream;
+
+  /**
+   * @description The exit code of the previous program.
+   */
   private lastExitCode: number;
 
-  public constructor(elementStream: ElementStream)
+  /**
+   * @description The user currently logged in.
+   */
+  public user: string;
+
+  /**
+   * @description The name of the host.
+   */
+  public host: string;
+
+  /**
+   * @description Creates a new simulated Linux shell.
+   *
+   * @param elementStream a stream of React elements where new program output can be appended
+   * @param defaultUser   the user who is logged in at the start of the shell session
+   * @param defaultHost   the name of the host machine at the start of the shell session
+   */
+  public constructor(elementStream: ElementStream, defaultUser: string, defaultHost: string)
   {
     this.elementStream = elementStream;
     this.lastExitCode = 0;
+    this.user = defaultUser;
+    this.host = defaultHost;
   }
 
+  /**
+   * @description Executes the given command string.
+   *
+   * @param command a string containing the command (and all of its arguments) to be executed
+   *
+   * @return  true if and only if the terminal session should end after the command is executed
+   */
   public exec(command: string): boolean
   {
     this.elementStream.push(<h1>{command}</h1>);

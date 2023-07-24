@@ -8,16 +8,18 @@
  * @description Defines the functional component for the main app.
  */
 
-import { ReactElement } from 'react';
+import {ReactElement} from 'react';
 import './App.css';
 import './terminal/Terminal';
 import Terminal from "./terminal/Terminal";
 
 /**
  * @description Functional component for the main app.
+ *
+ * @return  the rendered React element for the main app
  */
-const App = (): ReactElement =>
-{
+const App = (): ReactElement => {
+
   // Render a terminal component that consumes the entire app.
   return (
     <div className="app">
