@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans&display=swap');
+
+html {
+    min-width: 1000px;
+    font-family: 'Open Sans', cursive;
+}
+body {
+    margin: 0px;
+    background-color: #FFFFFF;
+}
+
+section {
+    display: block;
+    width: 900px;
+    min-height: 20px;
+    margin-left: calc(50% - 450px);
+    margin-bottom: 50px;
+    font-size: 0px;
+}
+
+section.top {
+    padding-top: 20px;
+    margin-bottom: 100px;
+}
+
+section.top div.top-left {
+    display: inline-block;
+    width: 600px;
+}
+
+img.cat-img {
+    width: 200px;
+}
+
+section.in {
+    width: 890px;
+    padding-left: 10px;
+    margin-left: calc(50% - 440px);
+    margin-top: 30px;
+    border-left-style: solid;
+    border-color: #0070AB;
+    border-width: 8px;
+}
+
+h1 {
+    display: block;
+    height: 100px;
+    padding: 0px;
+    margin: 0px;
+    font-size: 50px;
+    font-family: 'Bebas Neue', cursive;
+}
+
+h1 span.big1 {
+    font-size: 100px;
+    font-family: 'Bebas Neue', cursive;
+    color: #0070AB;
+}
+
+h1 span.big2 {
+    font-size: 100px;
+    font-family: 'Bebas Neue', cursive;
+    color: #C70000;
+}
+
+span.purple {
+    color: #5500A1;
+}
+
+h2 {
+    display: block;
+    padding: 0px;
+    margin: 0px 0px 40px;
+    font-size: 50px;
+    font-family: 'Bebas Neue', cursive;
+    font-weight: normal;
+    color: #333333;
+}
+
+span.meta {
+    display: block;
+    font-size: 18px;
+    font-family: 'Open Sans', sans-serif;
+    color: #555555;
+}
+
+h3 {
+    display: block;
+    width: 900px;
+    margin: 0px;
+    margin-left: calc(50% - 450px);
+    padding: 0px;
+    font-size: 30px;
+    font-family: 'Open Sans', cursive;
+    font-weight: normal;
+    color: #000000;
+}
+
+p {
+    padding-left: 0px;
+    font-size: 16px;
+}
+
+ol {
+    font-size: 16px;
+}
+
+button {
+    display: inline-block;
+    padding: 10px;
+    margin: 0px;
+    border-style: none;
+    width: 120px;
+    height: 40px;
+    background-color: #EEEEEE;
+    font-size: 14px;
+    color: #000000;
+    cursor: pointer;
+}
+
+div#left {
+    display: inline-block;
+    width: 440px;
+    margin-right: 20px;
+    vertical-align: top;
+}
+
+div#simulation {
+    display: inline-block;
+    width: 420px;
+    padding: 10px;
+    font-size: 0px;
+    vertical-align: top;
+}
+
+div#simulation-left {
+    display: inline-block;
+}
+
+div#simulation div#box {
+    display: inline-block;
+    width: 300px;
+    height: 300px;
+    margin-bottom: 10px;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+div#simulation div#box.closed {
+    background-image: url("res/box_closed.png");
+}
+
+div#simulation div#box.open {
+    background-image: url("res/box_open.png");
+}
+
+div#simulation div#box div#cat {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    margin-left: 100px;
+    margin-top: 100px;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+div#simulation div#box div#cat.alive {
+    background-image: url("res/cat_alive.png");
+}
+
+div#simulation div#box div#cat.dead {
+    background-image: url("res/cat_dead.png");
+}
+
+div#simulation div#button-box {
+    display: block;
+    text-align: center;
+}
+
+div#simulation span#simulation-credits {
+    display: block;
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+}
+
+div#simulation div#key {
+    display: inline-block;
+    margin-left: 20px;
+    margin-top: 50px;
+    vertical-align: top;
+}
+
+div#simulation div#key img {
+    display: block;
+    width: 100px;
+}
+
+div#simulation div#key span.caption {
+    display: block;
+    font-size: 20px;
+    text-align: center;
+}
+
+footer {
+    display: block;
+    height: 100px;
+}

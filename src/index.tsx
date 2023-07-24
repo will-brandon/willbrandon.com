@@ -1,19 +1,25 @@
+/**
+ * @file  index.tsx
+ *
+ * @type    XML-Friendly Typescript
+ * @author  Will Brandon
+ * @created July 23, 2023
+ *
+ * @description Main index page for my personal home page.
+ */
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
+// Find the root HTML root div element and make it thw React root element.
+const htmlRootElement = document.getElementById('root') as HTMLDivElement
+const reactRootElement = ReactDOM.createRoot(htmlRootElement);
+
+// Render the app in the React root element.
+reactRootElement.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
