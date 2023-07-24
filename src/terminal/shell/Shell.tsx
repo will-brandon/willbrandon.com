@@ -8,9 +8,11 @@
  * @description Defines a class that represents a simulated Linux shell.
  */
 
-import { ReactElement } from 'react';
 import ElementStream from './../../util/ElementStream';
 
+/**
+ * @description Represents a simulated Linux shell.
+ */
 class Shell
 {
   private readonly elementStream: ElementStream;

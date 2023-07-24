@@ -14,15 +14,17 @@ import ElementStream from './../util/ElementStream';
 import Shell from "./shell/Shell";
 
 /**
- * Functional component for the main app.
+ * @description Functional component for the main app.
  */
 const Terminal = (): ReactElement =>
 {
+  // Create a stream of the React elements output by the simulated Linux shell.
   const [elementStream] = useState<ElementStream>(new ElementStream());
+
+  // Create a simulated Linux shell.
   const [shell] = useState<Shell>(new Shell(elementStream));
 
-  shell.exec("a");
-
+  // Render the terminal prompt and the stream of React elements from the shell output.
   return (
     <div className="terminal">
       {elementStream.render()}

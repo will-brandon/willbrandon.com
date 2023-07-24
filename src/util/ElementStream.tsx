@@ -11,17 +11,27 @@
 import { ReactElement } from 'react';
 
 /**
- * Represents a stream of React elements.
+ * @description Represents a stream of React elements.
  */
 class ElementStream
 {
+  /**
+   * @description Stores the elements that have been pushed to the stream.
+   */
   private elementBuffer: ReactElement[];
 
+  /**
+   * @description Creates a new React element stream.
+   */
   public constructor()
   {
     this.elementBuffer = [];
   }
 
+  /**
+   * @description Renders the entire concatenated buffer of React elements to a single element.
+   * @return a React element containing all the buffer elements
+   */
   public render(): ReactElement
   {
     return (
@@ -31,11 +41,18 @@ class ElementStream
     );
   }
 
+  /**
+   * @description Clears the buffer of all React elements.
+   */
   public clear(): void
   {
     this.elementBuffer = [];
   }
 
+  /**
+   * @description Pushes a new React element to the buffer.
+   * @param element the new React element
+   */
   public push(element: ReactElement): void
   {
     this.elementBuffer.push(element);

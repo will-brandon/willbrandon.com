@@ -14,10 +14,11 @@ import './terminal/Terminal';
 import Terminal from "./terminal/Terminal";
 
 /**
- * Functional component for the main app.
+ * @description Functional component for the main app.
  */
 const App = (): ReactElement =>
 {
+  // Render a terminal component that consumes the entire app.
   return (
     <div className="app">
       <Terminal />
