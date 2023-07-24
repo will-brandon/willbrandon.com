@@ -12,6 +12,7 @@ import {ReactElement, useState} from 'react';
 import './Terminal.css';
 import ElementStream from './../util/ElementStream';
 import Shell from "./shell/Shell";
+import TerminalPrompt from "./TerminalPrompt";
 
 /**
  * @description The default user who starts logged in when the shell session begins.
@@ -40,6 +41,7 @@ const Terminal = (): ReactElement => {
   return (
     <div className="terminal">
       {elementStream.render()}
+      <TerminalPrompt user={shell.user} host={shell.host} />
     </div>
   );
 }
