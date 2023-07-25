@@ -8,7 +8,7 @@
  * @description Defines a class that represents a buffered stream of React elements.
  */
 
-import { ReactElement } from 'react';
+import React, {ReactElement} from 'react';
 
 /**
  * @description Represents a buffered stream of React elements.
@@ -36,9 +36,9 @@ class ElementStream
   public render(): ReactElement
   {
     return (
-      <div className="element-stream">
+      <React.Fragment>
         {this.elementBuffer}
-      </div>
+      </React.Fragment>
     );
   }
 
@@ -52,7 +52,7 @@ class ElementStream
 
   /**
    * @description Pushes a new React element to the buffer.
-   * 
+   *
    * @param element the new React element
    */
   public push(element: ReactElement): void

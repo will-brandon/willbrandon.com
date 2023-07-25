@@ -37,11 +37,18 @@ const Terminal = (): ReactElement => {
   // Create a simulated Linux shell.
   const [shell] = useState<Shell>(new Shell(elementStream, DEFAULT_TERMINAL_USER, DEFAULT_TERMINAL_HOST));
 
+  function exec(command: string): void
+  {
+    console.log("COMMAND: " + command);
+  }
+
   // Render the terminal prompt and the stream of React elements from the shell output.
   return (
-    <div className="terminal">
-      {elementStream.render()}
-      <TerminalPrompt user={shell.user} host={shell.host} />
+    <div className="terminal-viewport">
+      <div className="terminal">
+        {elementStream.render()}
+        <TerminalPrompt user={shell.user} host={shell.host} onExec={exec} />
+      </div>
     </div>
   );
 }
