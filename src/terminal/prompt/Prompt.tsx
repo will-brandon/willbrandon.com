@@ -76,6 +76,7 @@ const Prompt = (props: PromptProps): ReactElement => {
   {
     // Obtain the current input element from the reference.
     const currentInput = inputRef.current!;
+    console.log("A");
 
     if (event.key === "Enter")
     {

@@ -5,69 +5,48 @@
  * @author    Will Brandon
  * @created   July 23, 2023
  *
- * @description Defines a class that represents a buffered stream of React elements.
+ * @description Defines a class that represents an unbuffered stream of React elements.
  */
 
 import React, {ReactElement} from 'react';
 
 /**
- * @description Represents a buffered stream of React elements.
+ * @description Represents an unbuffered stream of React elements.
  */
-class ElementStream
-{
+class ElementStream {
+  
   /**
-   * @description Stores the elements that have been pushed to the stream.
+   * @description A function that receives an output stream element.
    */
-  private elementBuffer: ReactElement[];
-
+  private readonly receiver: (element: ReactElement) => void;
+  
+  /**
+   * @description An optional function that flushes the receiver's output buffer.
+   */
+  private readonly flusher?: () => void;
+  
+  /**
+   * @description Counts how many elements have flowed through the stream.
+   */
+  private flowCount: number;
+  
   /**
    * @description Creates a new React element stream.
-   */
-  public constructor()
-  {
-    this.elementBuffer = [];
-  }
-
-  /**
-   * @description Determines how many React elements have been pushed into the stream and collected into the buffer.
    *
-   * @return  an integer identifying how many React elements are in the buffer
+   * @param receiver  a function that receives an output stream element
+   * @param flusher   an optional function that flushes the receiver's output buffer
    */
-  public bufferSize(): number
+  public constructor(receiver: (element: ReactElement) => void, flusher?: () => void)
   {
-    return this.elementBuffer.length;
+    this.receiver = receiver;
+    this.flusher = flusher;
+    
+    // The flow count starts at 0 since no elements have been pushed yet.
+    this.flowCount = 0;
   }
-
+  
   /**
-   * @description Renders the entire concatenated buffer of React elements to a concatenated React fragment.
-   *
-   * @return  a React element containing all the buffer elements
-   */
-  public renderAll(): ReactElement
-  {
-    return (
-      <React.Fragment>
-        {this.elementBuffer}
-      </React.Fragment>
-    );
-  }
-
-  /**
-   * @description Clears the buffer of all React elements.
-   *
-   * @return  the element stream object for convenience
-   */
-  public clear(): ElementStream
-  {
-    // Set the buffer to an empty array.
-    this.elementBuffer = [];
-
-    // Return this object for convenience.
-    return this;
-  }
-
-  /**
-   * @description Pushes a new React element to the buffer.
+   * @description Pushes a new React element into the stream.
    *
    * @param element the new React element
    *
@@ -75,9 +54,35 @@ class ElementStream
    */
   public push(element: ReactElement): ElementStream
   {
-    // Push the element to the buffer.
-    this.elementBuffer.push(element);
-
+    // Increment the flow count indicating that a new item has been pushed.
+    this.flowCount += 1;
+    
+    // Wrap the element in a div with a React render-identifier key.
+    const identifiableElement = (
+      <div key={this.flowCount} className="stream-item">
+        {element}
+      </div>
+    );
+    
+    // Pass the identifiable element along to the receiver.
+    this.receiver(identifiableElement);
+    
+    // Return this object for convenience.
+    return this;
+  }
+  
+  /**
+   * @description Flushes the receiver buffer if a flusher function was given upon construction of the stream.
+   *
+   * @return  the element stream object for convenience
+   */
+  public flush(): ElementStream
+  {
+    // If a flusher function was specified use the function to flush the receiver buffer.
+    if (this.flusher) {
+      this.flusher();
+    }
+    
     // Return this object for convenience.
     return this;
   }

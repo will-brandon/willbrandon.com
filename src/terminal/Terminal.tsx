@@ -30,27 +30,30 @@ const DEFAULT_TERMINAL_HOST = "willbrandon.com";
  * @return  the rendered React element for the terminal
  */
 const Terminal = (): ReactElement => {
+  
+  const [feed, setFeed] = useState<ReactElement[]>([]);
+  
+  function receiveOutputElement(element: ReactElement): void
+  {
+  
+  }
 
   // Create a stream of the React elements output by the simulated Linux shell.
-  const [elementStream, setElementStream] = useState<ElementStream>(new ElementStream());
+  const [elementStream] = useState<ElementStream>(new ElementStream(receiveOutputElement));
 
   // Create a simulated Linux shell.
-  const [shell, setShell] = useState<Shell>(new Shell(elementStream, DEFAULT_TERMINAL_USER, DEFAULT_TERMINAL_HOST));
-
-  console.log(elementStream.bufferSize());
+  const [shell] = useState<Shell>(new Shell(elementStream, DEFAULT_TERMINAL_USER, DEFAULT_TERMINAL_HOST));
 
   function exec(command: string): void
   {
-    console.log(command);
-    setElementStream(elementStream => elementStream.push(<p>Command: {command}</p>));
-    console.log(elementStream.bufferSize());
+    setFeed(feed => [...feed, <h1>{command}</h1>]);
   }
 
   // Render the terminal prompt and the stream of React elements from the shell output.
   return (
     <div className="terminal-viewport">
       <div className="terminal">
-        {elementStream.renderAll()}
+        <div className="feed">{feed}</div>
         <TerminalPrompt user={shell.user} host={shell.host} onExec={exec} />
       </div>
     </div>
