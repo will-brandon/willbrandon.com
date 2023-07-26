@@ -33,20 +33,26 @@ const Terminal = (): ReactElement => {
   
   const [feed, setFeed] = useState<ReactElement[]>([]);
   
-  function receiveOutputElement(element: ReactElement): void
+  function pushFeed(element: ReactElement): void
   {
-  
+    feed.push(element);
+  }
+
+  function flushFeed(): void
+  {
+    setFeed([...feed]);
   }
 
   // Create a stream of the React elements output by the simulated Linux shell.
-  const [elementStream] = useState<ElementStream>(new ElementStream(receiveOutputElement));
+  const [elementStream] = useState<ElementStream>(new ElementStream(pushFeed, flushFeed));
 
   // Create a simulated Linux shell.
   const [shell] = useState<Shell>(new Shell(elementStream, DEFAULT_TERMINAL_USER, DEFAULT_TERMINAL_HOST));
 
   function exec(command: string): void
   {
-    setFeed(feed => [...feed, <h1>{command}</h1>]);
+    elementStream.push(<p>A: {command}</p>);
+    elementStream.flush();
   }
 
   // Render the terminal prompt and the stream of React elements from the shell output.

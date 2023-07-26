@@ -67,16 +67,10 @@ const Prompt = (props: PromptProps): ReactElement => {
     inputRef.current!.focus();
   }
 
-  function onInputChange(): void
-  {
-    fitInputToText();
-  }
-
   function onInputKeyDown(event: KeyboardEvent): void
   {
     // Obtain the current input element from the reference.
     const currentInput = inputRef.current!;
-    console.log("A");
 
     if (event.key === "Enter")
     {
@@ -100,19 +94,23 @@ const Prompt = (props: PromptProps): ReactElement => {
 
     // If focus is ever lost, immediately regain it.
     currentInput.addEventListener("focusout", focusInput);
+
+    currentInput.addEventListener("input", fitInputToText);
   }
 
   useEffect((): void => {
+
     initInputEventListeners();
     fitInputToText();
     focusInput();
-  });
+
+  }, []);
 
   // Render the terminal prompt message and input.
   return (
     <div className="terminal-prompt">
       <PromptMessage user={props.user} host={props.host} />
-      <input type="text" ref={inputRef} onChange={onInputChange}></input>
+      <input type="text" ref={inputRef}></input>
     </div>
   );
 }
