@@ -1,5 +1,5 @@
 /*
- * @file  TerminalPrompt.css
+ * @file  Prompt.css
  *
  * @filetype  Cascading Style Sheet
  * @author    Will Brandon
@@ -8,38 +8,10 @@
  * @description Styles for the a Linux terminal prompt.
  */
 
-/* Include the Roboto Mono font from Google Fonts. */
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
-
 div.terminal-prompt
 {
   display: inline-block;
   white-space: nowrap;
-}
-
-div.terminal-prompt div.message
-{
-  display: inline-block;
-}
-
-div.terminal-prompt div.message pre
-{
-  display: inline-block;
-  padding: 0;
-  margin: 0;
-  font-family: 'Roboto Mono', sans-serif;
-  font-size: 18px;
-  color: #d9d6d4;
-}
-
-div.terminal-prompt div.message pre.user
-{
-  color: #34d6b6;
-}
-
-div.terminal-prompt div.message pre.host
-{
-  color: #67beff;
 }
 
 div.terminal-prompt input[type=text]

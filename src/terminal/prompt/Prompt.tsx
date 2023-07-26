@@ -1,5 +1,5 @@
 /**
- * @file  TerminalPrompt.tsx
+ * @file  Prompt.tsx
  *
  * @filetype  XML-Friendly Typescript
  * @author    Will Brandon
@@ -9,7 +9,8 @@
  */
 
 import {ReactElement, useEffect, useRef} from 'react';
-import './TerminalPrompt.css';
+import './Prompt.css';
+import PromptMessage from "./PromptMessage";
 
 /**
  * @description Defines the properties that must be provided to a terminal prompt component.
@@ -39,7 +40,7 @@ interface PromptProps
  *
  * @return  the rendered React element for the terminal prompt
  */
-const TerminalPrompt = (props: PromptProps): ReactElement => {
+const Prompt = (props: PromptProps): ReactElement => {
 
   // Create a reference to the input element.
   const inputRef = useRef<HTMLInputElement>(null);
@@ -106,18 +107,13 @@ const TerminalPrompt = (props: PromptProps): ReactElement => {
     focusInput();
   });
 
-  // Render the terminal prompt and the stream of React elements from the shell output.
+  // Render the terminal prompt message and input.
   return (
     <div className="terminal-prompt">
-      <div className="message">
-        <pre className="user">{props.user}</pre>
-        <pre>@</pre>
-        <pre className="host">{props.host}</pre>
-        <pre>$ </pre>
-      </div>
+      <PromptMessage user={props.user} host={props.host} />
       <input type="text" ref={inputRef} onChange={onInputChange}></input>
     </div>
   );
 }
 
-export default TerminalPrompt;
+export default Prompt;

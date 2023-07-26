@@ -29,11 +29,21 @@ class ElementStream
   }
 
   /**
-   * @description Renders the entire concatenated buffer of React elements to a single element.
+   * @description Determines how many React elements have been pushed into the stream and collected into the buffer.
+   *
+   * @return  an integer identifying how many React elements are in the buffer
+   */
+  public bufferSize(): number
+  {
+    return this.elementBuffer.length;
+  }
+
+  /**
+   * @description Renders the entire concatenated buffer of React elements to a concatenated React fragment.
    *
    * @return  a React element containing all the buffer elements
    */
-  public render(): ReactElement
+  public renderAll(): ReactElement
   {
     return (
       <React.Fragment>
@@ -44,20 +54,32 @@ class ElementStream
 
   /**
    * @description Clears the buffer of all React elements.
+   *
+   * @return  the element stream object for convenience
    */
-  public clear(): void
+  public clear(): ElementStream
   {
+    // Set the buffer to an empty array.
     this.elementBuffer = [];
+
+    // Return this object for convenience.
+    return this;
   }
 
   /**
    * @description Pushes a new React element to the buffer.
    *
    * @param element the new React element
+   *
+   * @return  the element stream object for convenience
    */
-  public push(element: ReactElement): void
+  public push(element: ReactElement): ElementStream
   {
+    // Push the element to the buffer.
     this.elementBuffer.push(element);
+
+    // Return this object for convenience.
+    return this;
   }
 }
 

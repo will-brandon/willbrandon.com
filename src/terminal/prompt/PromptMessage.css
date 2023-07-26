@@ -1,0 +1,37 @@
+/*
+ * @file  PromptMessage.css
+ *
+ * @filetype  Cascading Style Sheet
+ * @author    Will Brandon
+ * @created   July 25, 2023
+ *
+ * @description Styles for the a Linux terminal prompt message.
+ */
+
+/* Include the Roboto Mono font from Google Fonts. */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+div.terminal-prompt-message
+{
+  display: inline-block;
+}
+
+div.terminal-prompt-message pre
+{
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto Mono', sans-serif;
+  font-size: 18px;
+  color: #d9d6d4;
+}
+
+div.terminal-prompt-message pre.user
+{
+  color: #34d6b6;
+}
+
+div.terminal-prompt-message pre.host
+{
+  color: #67beff;
+}

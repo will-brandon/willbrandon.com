@@ -12,7 +12,7 @@ import {ReactElement, useState} from 'react';
 import './Terminal.css';
 import ElementStream from './../util/ElementStream';
 import Shell from "./shell/Shell";
-import TerminalPrompt from "./TerminalPrompt";
+import TerminalPrompt from "./prompt/Prompt";
 
 /**
  * @description The default user who starts logged in when the shell session begins.
@@ -32,21 +32,25 @@ const DEFAULT_TERMINAL_HOST = "willbrandon.com";
 const Terminal = (): ReactElement => {
 
   // Create a stream of the React elements output by the simulated Linux shell.
-  const [elementStream] = useState<ElementStream>(new ElementStream());
+  const [elementStream, setElementStream] = useState<ElementStream>(new ElementStream());
 
   // Create a simulated Linux shell.
-  const [shell] = useState<Shell>(new Shell(elementStream, DEFAULT_TERMINAL_USER, DEFAULT_TERMINAL_HOST));
+  const [shell, setShell] = useState<Shell>(new Shell(elementStream, DEFAULT_TERMINAL_USER, DEFAULT_TERMINAL_HOST));
+
+  console.log(elementStream.bufferSize());
 
   function exec(command: string): void
   {
-    console.log("COMMAND: " + command);
+    console.log(command);
+    setElementStream(elementStream => elementStream.push(<p>Command: {command}</p>));
+    console.log(elementStream.bufferSize());
   }
 
   // Render the terminal prompt and the stream of React elements from the shell output.
   return (
     <div className="terminal-viewport">
       <div className="terminal">
-        {elementStream.render()}
+        {elementStream.renderAll()}
         <TerminalPrompt user={shell.user} host={shell.host} onExec={exec} />
       </div>
     </div>
