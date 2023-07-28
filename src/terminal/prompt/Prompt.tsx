@@ -45,66 +45,66 @@ const Prompt = (props: PromptProps): ReactElement => {
   // Create a reference to the input element.
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect((): void => {
+  /**
+   * @description Resizes the current input element to fit the text it contains with no extra trailing space. When the
+   *              input is empty one character of space is preserved because it makes debugging easier if the input does
+   *              not have a width of 0.
+   */
+  function fitInputToText(): void
+  {
+    // Obtain the current input element from the reference.
+    const currentInput = inputRef.current!;
 
-    /**
-     * @description Resizes the current input element to fit the text it contains with no extra trailing space. When the
-     *              input is empty one character of space is preserved because it makes debugging easier if the input does
-     *              not have a width of 0.
-     */
-    function fitInputToText(): void
+    // Set the input's size to be the length of its content, but no less than 1.
+    currentInput.size = Math.max(currentInput.value.length, 1);
+  }
+
+  /**
+   * @description Gives the current input element user input focus.
+   */
+  function focusInput(): void
+  {
+    inputRef.current!.focus();
+  }
+
+  function onInputKeyDown(event: KeyboardEvent): void
+  {
+    // Obtain the current input element from the reference.
+    const currentInput = inputRef.current!;
+
+    if (event.key === "Enter")
     {
-      // Obtain the current input element from the reference.
-      const currentInput = inputRef.current!;
-
-      // Set the input's size to be the length of its content, but no less than 1.
-      currentInput.size = Math.max(currentInput.value.length, 1);
-    }
-
-    /**
-     * @description Gives the current input element user input focus.
-     */
-    function focusInput(): void
-    {
-      inputRef.current!.focus();
-    }
-
-    function onInputKeyDown(event: KeyboardEvent): void
-    {
-      // Obtain the current input element from the reference.
-      const currentInput = inputRef.current!;
-
-      if (event.key === "Enter")
+      if (props.onExec)
       {
-        if (props.onExec)
-        {
-          props.onExec(currentInput.value);
-        }
-
-        currentInput.value = "";
-        fitInputToText();
+        props.onExec(currentInput.value);
       }
+
+      currentInput.value = "";
+      fitInputToText();
     }
+  }
 
-    function initInputEventListeners(): void
-    {
-      // Obtain the current input element from the reference.
-      const currentInput = inputRef.current!;
+  function initInputEventListeners(): void
+  {
+    // Obtain the current input element from the reference.
+    const currentInput = inputRef.current!;
 
-      // Delegate to a key down handler to handle the event.
-      currentInput.addEventListener("keydown", onInputKeyDown);
+    // Delegate to a key down handler to handle the event.
+    currentInput.addEventListener("keydown", onInputKeyDown);
 
-      // If focus is ever lost, immediately regain it.
-      currentInput.addEventListener("focusout", focusInput);
+    // If focus is ever lost, immediately regain it.
+    currentInput.addEventListener("focusout", focusInput);
 
-      currentInput.addEventListener("input", fitInputToText);
-    }
+    currentInput.addEventListener("input", fitInputToText);
+  }
+
+  useEffect((): void => {
 
     initInputEventListeners();
     fitInputToText();
     focusInput();
 
-  }, [props]);
+  }, []);
 
   // Render the terminal prompt message and input.
   return (

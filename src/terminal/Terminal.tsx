@@ -12,7 +12,8 @@ import {ReactElement, useState} from 'react';
 import './Terminal.css';
 import ElementStream from './../util/ElementStream';
 import Shell from "./shell/Shell";
-import TerminalPrompt from "./prompt/Prompt";
+import Prompt from "./prompt/Prompt";
+import PromptMessage from "./prompt/PromptMessage";
 
 /**
  * @description The default user who starts logged in when the shell session begins.
@@ -51,8 +52,8 @@ const Terminal = (): ReactElement => {
 
   function exec(command: string): void
   {
-    elementStream.push(<p>A: {command}</p>);
-    elementStream.flush();
+    elementStream.push(<PromptMessage user={shell.user} host={shell.host} staticCommand={command} />).flush()
+    shell.exec(command);
   }
 
   // Render the terminal prompt and the stream of React elements from the shell output.
@@ -60,7 +61,7 @@ const Terminal = (): ReactElement => {
     <div className="terminal-viewport">
       <div className="terminal">
         <div className="feed">{feed}</div>
-        <TerminalPrompt user={shell.user} host={shell.host} onExec={exec} />
+        <Prompt user={shell.user} host={shell.host} onExec={exec} />
       </div>
     </div>
   );

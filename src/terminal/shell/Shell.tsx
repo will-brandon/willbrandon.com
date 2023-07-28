@@ -59,7 +59,7 @@ class Shell
    */
   public exec(command: string): boolean
   {
-    this.elementStream.push(<h1>{command}</h1>);
+    this.elementStream.push(<h1>{command}</h1>).flush();
     return false;
   }
 }

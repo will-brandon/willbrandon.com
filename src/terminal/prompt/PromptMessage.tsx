@@ -26,6 +26,11 @@ interface PromptMessageProps
    * @description The name of the host.
    */
   host: string;
+
+  /**
+   * @description An optional static command that cannot be edited. This is useful for the history of the terminal feed.
+   */
+  staticCommand?: string;
 }
 
 /**
@@ -37,13 +42,17 @@ interface PromptMessageProps
  */
 const PromptMessage = (props: PromptMessageProps): ReactElement => {
 
-  // Render the terminal prompt message including the username and hostname.
+  // Render the terminal prompt message including the username and hostname. Append a static command to the end if one
+  // is included.
   return (
     <div className="terminal-prompt-message">
       <pre className="user">{props.user}</pre>
       <pre>@</pre>
       <pre className="host">{props.host}</pre>
       <pre>$ </pre>
+      {
+        props.staticCommand ? <pre>{props.staticCommand}</pre> : ""
+      }
     </div>
   );
 }
