@@ -33,26 +33,41 @@ const DEFAULT_TERMINAL_HOST = "willbrandon.com";
 const Terminal = (): ReactElement => {
   
   const [feed, setFeed] = useState<ReactElement[]>([]);
+
+  console.log("ON RENDER: " + feed);
   
   function pushFeed(element: ReactElement): void
   {
+    console.log("PRE PUSH: " + feed);
     feed.push(element);
+    console.log("POST PUSH: " + feed);
   }
 
   function flushFeed(): void
   {
+    console.log("PRE FLUSH: " + feed);
     setFeed([...feed]);
+    console.log("POST FLUSH: " + feed);
+  }
+
+  function clearFeed(): void
+  {
+    console.log("PRE CLEAR: " + feed);
+    setFeed([]);
+    console.log("POST CLEAR: " + feed);
   }
 
   // Create a stream of the React elements output by the simulated Linux shell.
   const [elementStream] = useState<ElementStream>(new ElementStream(pushFeed, flushFeed));
 
   // Create a simulated Linux shell.
-  const [shell] = useState<Shell>(new Shell(elementStream, DEFAULT_TERMINAL_USER, DEFAULT_TERMINAL_HOST));
+  const [shell] = useState<Shell>(
+    new Shell(elementStream, DEFAULT_TERMINAL_USER, DEFAULT_TERMINAL_HOST, flushFeed, clearFeed)
+  );
 
   function exec(command: string): void
   {
-    elementStream.push(<PromptMessage user={shell.user} host={shell.host} staticCommand={command} />).flush()
+    elementStream.push(<PromptMessage user={shell.user} host={shell.host} staticCommand={command} />).flush();
     shell.exec(command);
   }
 

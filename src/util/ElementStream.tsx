@@ -23,7 +23,7 @@ class ElementStream {
   /**
    * @description An optional function that flushes the receiver's output buffer.
    */
-  private readonly flusher?: () => void;
+  private readonly flushFunc?: () => void;
   
   /**
    * @description Counts how many elements have flowed through the stream.
@@ -34,12 +34,12 @@ class ElementStream {
    * @description Creates a new React element stream.
    *
    * @param receiver  a function that receives an output stream element
-   * @param flusher   an optional function that flushes the receiver's output buffer
+   * @param flushFunc an optional function that flushes the receiver's output buffer
    */
-  public constructor(receiver: (element: ReactElement) => void, flusher?: () => void)
+  public constructor(receiver: (element: ReactElement) => void, flushFunc?: () => void)
   {
     this.receiver = receiver;
-    this.flusher = flusher;
+    this.flushFunc = flushFunc;
     
     // The flow count starts at 0 since no elements have been pushed yet.
     this.flowCount = 0;
@@ -79,8 +79,8 @@ class ElementStream {
   public flush(): ElementStream
   {
     // If a flusher function was specified use the function to flush the receiver buffer.
-    if (this.flusher) {
-      this.flusher();
+    if (this.flushFunc) {
+      this.flushFunc();
     }
     
     // Return this object for convenience.
