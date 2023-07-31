@@ -13,14 +13,20 @@ export function parseTokens(command: string): string[]
   const tokens: string[] = [];
 
   let workingTokenIndex = 0;
-
   let hangingQuote = "";
+  let hangingEscape = false;
 
   for (let i = 0; i < command.length; i++)
   {
     const char = command.charAt(i);
 
-    if (char === "'" || char === "\"")
+    if (char === "\\")
+    {
+      hangingEscape = true;
+      continue;
+    }
+
+    if (!hangingEscape && (char === "'" || char === "\""))
     {
       if (hangingQuote === char)
       {
@@ -51,6 +57,8 @@ export function parseTokens(command: string): string[]
         tokens[workingTokenIndex] = char;
       }
     }
+
+    hangingEscape = false;
   }
 
   return tokens;
