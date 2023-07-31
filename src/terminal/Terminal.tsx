@@ -31,38 +31,29 @@ const DEFAULT_TERMINAL_HOST = "willbrandon.com";
  * @return  the rendered React element for the terminal
  */
 const Terminal = (): ReactElement => {
-  
-  const [feed, setFeed] = useState<ReactElement[]>([]);
 
-  console.log("ON RENDER: " + feed);
+  const [feed, setFeed] = useState<ReactElement[]>([]);
   
   function pushFeed(element: ReactElement): void
   {
-    console.log("PRE PUSH: " + feed);
-    feed.push(element);
-    console.log("POST PUSH: " + feed);
+    setFeed(feed => [...feed, element]);
   }
 
-  function flushFeed(): void
+  function exit(code: number): void
   {
-    console.log("PRE FLUSH: " + feed);
-    setFeed([...feed]);
-    console.log("POST FLUSH: " + feed);
+    console.log("EXIT");
   }
 
-  function clearFeed(): void
-  {
-    console.log("PRE CLEAR: " + feed);
+  function clearFeed(): void {
     setFeed([]);
-    console.log("POST CLEAR: " + feed);
   }
 
   // Create a stream of the React elements output by the simulated Linux shell.
-  const [elementStream] = useState<ElementStream>(new ElementStream(pushFeed, flushFeed));
+  const [elementStream] = useState<ElementStream>(new ElementStream(pushFeed));
 
   // Create a simulated Linux shell.
   const [shell] = useState<Shell>(
-    new Shell(elementStream, DEFAULT_TERMINAL_USER, DEFAULT_TERMINAL_HOST, flushFeed, clearFeed)
+    new Shell(elementStream, DEFAULT_TERMINAL_USER, DEFAULT_TERMINAL_HOST, exit, clearFeed)
   );
 
   function exec(command: string): void
@@ -76,7 +67,9 @@ const Terminal = (): ReactElement => {
     <div className="terminal-viewport">
       <div className="terminal">
         <div className="feed">{feed}</div>
-        <Prompt user={shell.user} host={shell.host} onExec={exec} />
+        {
+          shell.isActive() ? <Prompt user={shell.user} host={shell.host} onExec={exec} /> : ""
+        }
       </div>
     </div>
   );

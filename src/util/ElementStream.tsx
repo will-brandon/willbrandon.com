@@ -13,7 +13,8 @@ import React, {ReactElement} from 'react';
 /**
  * @description Represents an unbuffered stream of React elements.
  */
-class ElementStream {
+class ElementStream
+{
   
   /**
    * @description A function that receives an output stream element.
@@ -59,9 +60,7 @@ class ElementStream {
     
     // Wrap the element in a div with a React render-identifier key.
     const identifiableElement = (
-      <div key={this.flowCount} className="stream-item">
-        {element}
-      </div>
+      <div key={this.flowCount} className="stream-item">{element}</div>
     );
     
     // Pass the identifiable element along to the receiver.

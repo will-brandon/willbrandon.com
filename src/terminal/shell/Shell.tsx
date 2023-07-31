@@ -71,7 +71,7 @@ class Shell
     return !this.didExit;
   }
 
-  public exit(code: number): Shell
+  public exit(code: number = 0): Shell
   {
     if (this.exitFunc)
     {
@@ -102,7 +102,13 @@ class Shell
   {
     if (command === "clear")
     {
+      console.log("CLEARING...");
       this.clear();
+    }
+    else if (command === "exit")
+    {
+      console.log("EXITING...");
+      this.exit(0);
     }
 
     return this;
