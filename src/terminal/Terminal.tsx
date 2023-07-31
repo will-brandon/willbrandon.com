@@ -8,7 +8,7 @@
  * @description Defines the functional component for a simulated Linux terminal.
  */
 
-import {ReactElement, useState} from 'react';
+import {ReactElement, useEffect, useRef, useState} from 'react';
 import './Terminal.css';
 import ElementStream from './../util/ElementStream';
 import Shell, {ShellLogin} from "./shell/Shell";
@@ -28,6 +28,9 @@ const DEFAULT_TERMINAL_SHELL_LOGIN: ShellLogin = {user: "guest", host: "willbran
  * @return  the rendered React element for the terminal
  */
 const Terminal = (): ReactElement => {
+
+  // Create a reference to the viewport element.
+  const viewportRef = useRef<HTMLDivElement>(null);
 
   // Manage the state of the feed which consists of an array of React elements. These elements are composed of previous
   // prompts followed by the commands that were input as well as all output from commands via the element stream.
@@ -66,14 +69,23 @@ const Terminal = (): ReactElement => {
     setShell(shell => shell);
   }
 
+  function scrollToBottom():  void
+  {
+    viewportRef.current!.scrollTo(0, 100000000);
+  }
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [feed]);
+
   // Render the terminal prompt and the stream of React elements from the shell output. Include the command prompt if
   // the shell is active.
   return (
-    <div className="terminal-viewport">
+    <div className="terminal-viewport" ref={viewportRef}>
       <div className="terminal">
         <div className="feed">{feed}</div>
         {
-          shell.isActive() ? <Prompt login={shell.login} onExec={exec} /> : ""
+          shell.isActive() ? <Prompt login={shell.login} onChange={scrollToBottom} onExec={exec} /> : ""
         }
       </div>
     </div>

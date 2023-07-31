@@ -24,6 +24,11 @@ interface PromptProps
   login: ShellLogin;
 
   /**
+   * @description An optional function that is called each time the command input value changes.
+   */
+  onChange?: (value: string) => void;
+
+  /**
    * @description An optional function that handles a command when the user submits the input.
    */
   onExec?: (command: string) => void;
@@ -99,6 +104,16 @@ const Prompt = (props: PromptProps): ReactElement => {
       }
     }
 
+    function onInputValueChange()
+    {
+      if (props.onChange)
+      {
+        props.onChange(currentInput.value);
+      }
+
+      fitInputToText();
+    }
+
     /**
      * @description`Adds input listeners to the current input.
      */
@@ -111,7 +126,7 @@ const Prompt = (props: PromptProps): ReactElement => {
       currentInput.addEventListener("focusout", focusInput);
 
       // When the input value changes resize the input to the value.
-      currentInput.addEventListener("input", fitInputToText);
+      currentInput.addEventListener("input", onInputValueChange);
     }
 
     /**
