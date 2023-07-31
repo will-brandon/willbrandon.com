@@ -9,7 +9,7 @@
  */
 
 import ElementStream from './../../util/ElementStream';
-import {containsWhitespace, parseTokens} from "../../util/StringUtil";
+import {parseTokens} from "../../util/StringUtil";
 import CommandSet from "./command/CommandSet";
 import ClearCommand from "./command/ClearCommand";
 
@@ -31,6 +31,8 @@ export interface ShellLogin
  */
 export default class Shell
 {
+  public readonly name: string;
+
   /**
    * @description Contains user and host login details.
    */
@@ -66,11 +68,13 @@ export default class Shell
    * @param onClear       an optional function that instructs the environment to clear its output buffer
    */
   public constructor(
+    name: string,
     login: ShellLogin,
     elementStream: ElementStream,
     onExit?: (code: number) => void,
     onClear?: () => void
   ) {
+    this.name = name;
     this.login = login;
     this.elementStream = elementStream;
     this.onExit = onExit;
@@ -124,7 +128,21 @@ export default class Shell
       return this;
     }
 
-    this.commandSet.exec(this, tokens[0], tokens.slice(1, tokens.length));
+    const commandName = tokens[0];
+    const commandArgs = tokens.slice(1, tokens.length);
+
+    try
+    {
+      this.lastExitCode = this.commandSet.exec(this, commandName, commandArgs);
+    }
+    catch (error)
+    {
+      this.elementStream.push(
+        <pre className={"error"}>{this.name}: command not found: {commandName}</pre>
+      );
+    }
+
+
 
     return this;
   }

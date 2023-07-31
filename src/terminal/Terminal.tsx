@@ -15,6 +15,8 @@ import Shell, {ShellLogin} from "./shell/Shell";
 import Prompt from "./prompt/Prompt";
 import PromptMessage from "./prompt/PromptMessage";
 
+const TERMINAL_SHELL_NAME = "willshell";
+
 /**
  * @description The default user and host who start logged in when the shell session begins.
  */
@@ -54,7 +56,7 @@ const Terminal = (): ReactElement => {
 
   // Manage the state of a simulated Linux shell.
   const [shell, setShell] = useState<Shell>(
-    new Shell(DEFAULT_TERMINAL_SHELL_LOGIN, elementStream, undefined, clearFeed)
+    new Shell(TERMINAL_SHELL_NAME, DEFAULT_TERMINAL_SHELL_LOGIN, elementStream, undefined, clearFeed)
   );
 
   function exec(command: string): void

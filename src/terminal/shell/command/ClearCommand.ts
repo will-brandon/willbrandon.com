@@ -18,8 +18,7 @@ export default class ClearCommand extends ShellCommand
 
   public override exec(shell: Shell, args: string[]): number
   {
-    console.log("ARGS: " + args);
-
+    shell.clear();
     return 0;
   }
 }
