@@ -10,8 +10,15 @@
 
 import ElementStream from './../../util/ElementStream';
 import {parseTokens} from "../../util/StringUtil";
-import CommandSet from "./command/CommandSet";
+import CommandSet from "./CommandSet";
+import ShellCommand from "./command/ShellCommand";
+import ExitCommand from "./command/ExitCommand";
 import ClearCommand from "./command/ClearCommand";
+
+const COMMANDS: ShellCommand[] = [
+  new ExitCommand(),
+  new ClearCommand()
+];
 
 export interface ShellLogin
 {
@@ -62,6 +69,7 @@ export default class Shell
   /**
    * @description Creates a new simulated Linux shell.
    *
+   * @param name          the name of the shell
    * @param login         an object describing the user and host
    * @param elementStream a stream of React elements where new program output can be appended
    * @param onExit        an optional function that instructs the environment to exit with a given exit code
@@ -83,7 +91,7 @@ export default class Shell
     this.didExit = false;
     this.lastExitCode = 0;
 
-    this.commandSet.register(new ClearCommand());
+    this.commandSet.register(...COMMANDS);
   }
 
   public isActive(): boolean

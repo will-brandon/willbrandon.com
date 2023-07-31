@@ -7,9 +7,8 @@
  *
  * @description Defines a class that represents a set of Linux commands.
  */
-
-import Shell from "../Shell";
-import ShellCommand from "./ShellCommand";
+import ShellCommand from "./command/ShellCommand";
+import Shell from "./Shell";
 
 export default class CommandSet
 {
@@ -25,14 +24,15 @@ export default class CommandSet
     return this.commands.find(command => command.name === name);
   }
 
-  public register(command: ShellCommand): void
+  public register(...commands: ShellCommand[]): void
   {
-    if (this.find(command.name))
-    {
-      throw TypeError("Cannot register a command with a name that's already in the set registry.");
-    }
+    commands.forEach(command => {
+      if (this.find(command.name)) {
+        throw TypeError("Cannot register a command with a name that's already in the set registry.");
+      }
 
-    this.commands.push(command);
+      this.commands.push(command);
+    });
   }
 
   public exec(shell: Shell, name: string, args: string[]): number
