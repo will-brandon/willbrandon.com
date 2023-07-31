@@ -31,6 +31,12 @@ interface PromptProps
    * @description An optional function that handles a command when the user submits the input.
    */
   onExec?: (command: string) => void;
+
+  /**
+   * @description An optional boolean determining whether the prompt hogs input focus. If no value is specified true is
+   *              assumed.
+   */
+  hogFocus?: boolean;
 }
 
 /**
@@ -45,14 +51,17 @@ const Prompt = (props: PromptProps): ReactElement => {
   // Create a reference to the input element.
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
+  // Implement functionality to handle when the component mounts (defined in function body) and the UI unmounts (defined
+  // in returned function body).
+  useEffect((): (() => void) => {
 
+    // Acquire the current rendered text input element from the reference.
     const currentInput = inputRef.current!;
 
     /**
      * @description Resizes the current input element to fit the text it contains with no extra trailing space. When the
-     *              input is empty one character of space is preserved because it makes debugging easier if the input does
-     *              not have a width of 0.
+     *              input is empty one character of space is preserved because it makes debugging easier if the input
+     *              does not have a width of 0.
      */
     function fitInputToText(): void
     {
@@ -61,27 +70,42 @@ const Prompt = (props: PromptProps): ReactElement => {
     }
 
     /**
-     * @description Gives the current input element user input focus.
+     * @description Gives the current input element user input focus if the hog focus configuration is enabled.
      */
     function focusInput(): void
     {
-      currentInput.focus();
+      // If the hog focus property is undefined, treat it as true by default.
+      if (props.hogFocus === undefined || props.hogFocus)
+      {
+        currentInput.focus();
+      }
     }
 
+    /**
+     * @description Handles the keydown events that occur on the current input.
+     *
+     * @param event an object representing the keyboard event
+     */
     function onInputKeyDown(event: KeyboardEvent): void
     {
+      // If the enter key is pressed execute the current command.
       if (event.key === "Enter")
       {
+        // If the execution function exits, call it with the current input value.
         if (props.onExec)
         {
           props.onExec(currentInput.value);
         }
 
+        // Clear the input value and resize it appropriately.
         currentInput.value = "";
         fitInputToText();
       }
     }
 
+    /**
+     * @description`Adds input listeners to the current input.
+     */
     function initInputEventListeners(): void
     {
       // Delegate to a key down handler to handle the event.
@@ -90,24 +114,28 @@ const Prompt = (props: PromptProps): ReactElement => {
       // If focus is ever lost, immediately regain it.
       currentInput.addEventListener("focusout", focusInput);
 
+      // When the input value changes resize the input to the value.
       currentInput.addEventListener("input", fitInputToText);
-
-      console.log("INIT");
     }
 
+    /**
+     * @description Removes the input listeners from the current input.
+     */
     function deinitInputEventListeners(): void
     {
+      // Remove all 3 input listeners.
       currentInput.removeEventListener("keydown", onInputKeyDown);
-
       currentInput.removeEventListener("focusout", focusInput);
-
       currentInput.removeEventListener("input", fitInputToText);
     }
 
+    // When the element component renders create the event listeners, make the input the proper size, and give the input
+    // focus.
     initInputEventListeners();
     fitInputToText();
     focusInput();
 
+    // Return the event listener cleanup function so that it gets called when the component unmounts.
     return deinitInputEventListeners;
 
   }, [props]);

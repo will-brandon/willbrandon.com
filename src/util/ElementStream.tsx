@@ -78,7 +78,8 @@ class ElementStream
   public flush(): ElementStream
   {
     // If a flusher function was specified use the function to flush the receiver buffer.
-    if (this.flushFunc) {
+    if (this.flushFunc)
+    {
       this.flushFunc();
     }
     
