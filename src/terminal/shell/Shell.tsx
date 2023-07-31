@@ -124,7 +124,6 @@ export default class Shell
 
     if (tokens.length === 0)
     {
-      console.log("EMPTY");
       return this;
     }
 
@@ -135,14 +134,12 @@ export default class Shell
     {
       this.lastExitCode = this.commandSet.exec(this, commandName, commandArgs);
     }
-    catch (error)
+    catch
     {
       this.elementStream.push(
-        <pre className={"error"}>{this.name}: command not found: {commandName}</pre>
+        <pre className="output">{this.name}: command not found: {commandName}</pre>
       );
     }
-
-
 
     return this;
   }
