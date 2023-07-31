@@ -1,12 +1,17 @@
 /**
  * @file  StringUtil.ts
  *
- * @filetype  XML-Friendly Typescript
+ * @filetype  Typescript
  * @author    Will Brandon
  * @created   July 31, 2023
  *
  * @description Defines utility functions for manipulating and parsing strings.
  */
+
+export function containsWhitespace(str: string): boolean
+{
+  return str.trim().length !== str.length;
+}
 
 export function parseTokens(command: string): string[]
 {

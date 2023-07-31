@@ -1,7 +1,7 @@
 /**
- * @file  Shell.tsx
+ * @file  Shell.ts
  *
- * @filetype  XML-Friendly Typescript
+ * @filetype  Typescript
  * @author    Will Brandon
  * @created   July 23, 2023
  *
@@ -9,6 +9,9 @@
  */
 
 import ElementStream from './../../util/ElementStream';
+import {containsWhitespace, parseTokens} from "../../util/StringUtil";
+import CommandSet from "./command/CommandSet";
+import ClearCommand from "./command/ClearCommand";
 
 export interface ShellLogin
 {
@@ -34,6 +37,17 @@ export default class Shell
   public readonly login: ShellLogin;
 
   /**
+   * @description The stream of React elements that the shell has output.
+   */
+  private readonly elementStream: ElementStream;
+
+  private readonly onExit?: (code: number) => void;
+
+  private readonly onClear?: () => void;
+
+  public readonly commandSet: CommandSet;
+
+  /**
    * @description Determines whether the shell has exited.
    */
   private didExit: boolean;
@@ -44,34 +58,28 @@ export default class Shell
   private lastExitCode: number;
 
   /**
-   * @description The stream of React elements that the shell has output.
-   */
-  private readonly elementStream: ElementStream;
-
-  private readonly exitFunc?: (code: number) => void;
-
-  private readonly clearFunc?: () => void;
-
-  /**
    * @description Creates a new simulated Linux shell.
    *
-   * @param elementStream a stream of React elements where new program output can be appended
    * @param login         an object describing the user and host
-   * @param exitFunc      an optional function that instructs the environment to exit with a given exit code
-   * @param clearFunc     an optional function that instructs the environment to clear its output buffer
+   * @param elementStream a stream of React elements where new program output can be appended
+   * @param onExit        an optional function that instructs the environment to exit with a given exit code
+   * @param onClear       an optional function that instructs the environment to clear its output buffer
    */
   public constructor(
-    elementStream: ElementStream,
     login: ShellLogin,
-    exitFunc?: (code: number) => void,
-    clearFunc?: () => void
+    elementStream: ElementStream,
+    onExit?: (code: number) => void,
+    onClear?: () => void
   ) {
+    this.login = login;
+    this.elementStream = elementStream;
+    this.onExit = onExit;
+    this.onClear = onClear;
+    this.commandSet = new CommandSet();
     this.didExit = false;
     this.lastExitCode = 0;
-    this.elementStream = elementStream;
-    this.login = login;
-    this.exitFunc = exitFunc;
-    this.clearFunc = clearFunc;
+
+    this.commandSet.register(new ClearCommand());
   }
 
   public isActive(): boolean
@@ -81,9 +89,9 @@ export default class Shell
 
   public exit(code: number = 0): Shell
   {
-    if (this.exitFunc)
+    if (this.onExit)
     {
-      this.exitFunc(code);
+      this.onExit(code);
     }
 
     this.didExit = true;
@@ -93,9 +101,9 @@ export default class Shell
 
   public clear(): Shell
   {
-    if (this.clearFunc)
+    if (this.onClear)
     {
-      this.clearFunc();
+      this.onClear();
     }
 
     return this;
@@ -108,6 +116,16 @@ export default class Shell
    */
   public exec(command: string): Shell
   {
+    const tokens = parseTokens(command);
+
+    if (tokens.length === 0)
+    {
+      console.log("EMPTY");
+      return this;
+    }
+
+    this.commandSet.exec(this, tokens[0], tokens.slice(1, tokens.length));
+
     return this;
   }
 }

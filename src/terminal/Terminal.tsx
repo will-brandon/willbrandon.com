@@ -54,13 +54,14 @@ const Terminal = (): ReactElement => {
 
   // Manage the state of a simulated Linux shell.
   const [shell, setShell] = useState<Shell>(
-    new Shell(elementStream, DEFAULT_TERMINAL_SHELL_LOGIN, undefined, clearFeed)
+    new Shell(DEFAULT_TERMINAL_SHELL_LOGIN, elementStream, undefined, clearFeed)
   );
 
   function exec(command: string): void
   {
     elementStream.push(<PromptMessage login={shell.login} staticCommand={command} />);
-    setShell(shell => shell.exec(command));
+    shell.exec(command);
+    setShell(shell => shell);
   }
 
   // Render the terminal prompt and the stream of React elements from the shell output. Include the command prompt if

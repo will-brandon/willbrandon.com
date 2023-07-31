@@ -12,11 +12,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import {parseTokens} from "./util/StringUtil";
-
-const str = "    This is\n   \t an \"exam\" ple abc 'command' \\\"  \\  that 'I am testing' ri\tght now.\n   ";
-console.log(str);
-console.log(parseTokens(str));
 
 // Find the root HTML root div element and make it thw React root element.
 const htmlRootElement = document.getElementById('root') as HTMLDivElement

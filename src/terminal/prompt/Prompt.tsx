@@ -136,11 +136,18 @@ const Prompt = (props: PromptProps): ReactElement => {
 
   }, [props]);
 
-  // Render the terminal prompt message and input.
+  // Render the terminal prompt message and input. Ensure the input element has no automatic correction or
+  // capitalization and no spell check.
   return (
     <div className="terminal-prompt">
       <PromptMessage login={props.login} />
-      <input type="text" ref={inputRef}></input>
+      <input
+        ref={inputRef}
+        type="text"
+        autoCorrect="false"
+        autoCapitalize="none"
+        spellCheck="false"
+      ></input>
     </div>
   );
 }
