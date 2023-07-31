@@ -14,8 +14,10 @@ import Shell from "../Shell";
 export default abstract class ShellCommand
 {
   public readonly name: string;
+  public readonly usage: string;
+  public readonly description: string;
 
-  protected constructor(name: string)
+  protected constructor(name: string, usage: string, description: string)
   {
     if (containsWhitespace(name))
     {
@@ -23,6 +25,8 @@ export default abstract class ShellCommand
     }
 
     this.name = name;
+    this.usage = usage;
+    this.description = description;
   }
 
   public abstract exec(shell: Shell, args: string[]): number;

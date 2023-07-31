@@ -10,21 +10,49 @@
 import Shell from "../Shell";
 import ShellCommand from "./ShellCommand";
 
+const EXIT_COMMAND_NAME = "exit";
+const EXIT_COMMAND_USAGE = EXIT_COMMAND_NAME + ": [code]";
+const EXIT_COMMAND_DESCRIPTION = "Exits the shell session.";
+
 export default class ExitCommand extends ShellCommand
 {
-  public constructor() {
-    super("exit");
+  public constructor()
+  {
+    super(EXIT_COMMAND_NAME, EXIT_COMMAND_USAGE, EXIT_COMMAND_DESCRIPTION);
   }
 
   public override exec(shell: Shell, args: string[]): number
   {
-    shell.elementStream.println();
-    shell.elementStream.println("Saving session...");
-    shell.elementStream.println("...copying shared history...");
-    shell.elementStream.println("...saving history...truncating history files...");
-    shell.elementStream.println("...completed.");
-    shell.elementStream.println();
-    shell.elementStream.println("[Process completed]");
+    const stream = shell.elementStream;
+
+    let code = 0;
+
+    if (args.length > 1)
+    {
+      stream.println("Only one argument is accepted. Usage: " + this.usage);
+      return 1;
+    }
+    else if (args.length === 1)
+    {
+      code = parseInt(args[0], 10);
+
+      if (Number.isNaN(code))
+      {
+        stream.println("Invalid exit code given: '" + args[0] + "'");
+        return 1;
+      }
+    }
+
+    stream
+      .println("")
+      .println("Exiting with code " + code)
+      .println("")
+      .println("Saving session...")
+      .println("...copying shared history...")
+      .println("...saving history...truncating history files...")
+      .println("...completed.")
+      .println()
+      .println("[Process completed]");
 
     shell.exit();
     return 0;
