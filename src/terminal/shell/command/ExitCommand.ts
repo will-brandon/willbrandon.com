@@ -18,6 +18,14 @@ export default class ExitCommand extends ShellCommand
 
   public override exec(shell: Shell, args: string[]): number
   {
+    shell.elementStream.println();
+    shell.elementStream.println("Saving session...");
+    shell.elementStream.println("...copying shared history...");
+    shell.elementStream.println("...saving history...truncating history files...");
+    shell.elementStream.println("...completed.");
+    shell.elementStream.println();
+    shell.elementStream.println("[Process completed]");
+
     shell.exit();
     return 0;
   }

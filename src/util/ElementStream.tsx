@@ -62,4 +62,14 @@ export default class ElementStream
     // Return this object for convenience.
     return this;
   }
+
+  public println(str?: string): ElementStream
+  {
+    str = str ? str : "";
+
+    this.push(<pre className="line">{str}</pre>);
+
+    // Return this object for convenience.
+    return this;
+  }
 }

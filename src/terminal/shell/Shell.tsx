@@ -48,7 +48,7 @@ export default class Shell
   /**
    * @description The stream of React elements that the shell has output.
    */
-  private readonly elementStream: ElementStream;
+  public readonly elementStream: ElementStream;
 
   private readonly onExit?: (code: number) => void;
 
@@ -145,7 +145,7 @@ export default class Shell
     catch
     {
       this.elementStream.push(
-        <pre className="output">{this.name}: command not found: {commandName}</pre>
+        <pre className="line">{this.name}: command not found: {commandName}</pre>
       );
     }
 

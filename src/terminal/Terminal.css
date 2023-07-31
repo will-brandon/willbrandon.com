@@ -25,7 +25,7 @@ div.terminal
   background-color: #212121;
 }
 
-div.terminal div.feed pre.output
+div.terminal div.feed pre.line
 {
   display: inline-block;
   padding: 0;
