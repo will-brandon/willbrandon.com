@@ -11,6 +11,7 @@
 
 import {ReactElement} from 'react';
 import './PromptMessage.css';
+import {ShellLogin} from "../shell/Shell";
 
 /**
  * @description Defines the properties that must be provided to a terminal prompt message component.
@@ -18,14 +19,9 @@ import './PromptMessage.css';
 interface PromptMessageProps
 {
   /**
-   * @description The user currently logged in.
+   * @description Contains the user and host login details.
    */
-  user: string;
-
-  /**
-   * @description The name of the host.
-   */
-  host: string;
+  login: ShellLogin;
 
   /**
    * @description An optional static command that cannot be edited. This is useful for the history of the terminal feed.
@@ -46,9 +42,9 @@ const PromptMessage = (props: PromptMessageProps): ReactElement => {
   // is included.
   return (
     <div className="terminal-prompt-message">
-      <pre className="user">{props.user}</pre>
+      <pre className="user">{props.login.user}</pre>
       <pre>@</pre>
-      <pre className="host">{props.host}</pre>
+      <pre className="host">{props.login.host}</pre>
       <pre>$ </pre>
       {
         props.staticCommand ? <pre>{props.staticCommand}</pre> : ""

@@ -10,11 +10,32 @@
 
 import ElementStream from './../../util/ElementStream';
 
+export interface ShellLogin
+{
+  /**
+   * @description The user currently logged in.
+   */
+  user: string;
+
+  /**
+   * @description The name of the host.
+   */
+  host: string;
+}
+
 /**
  * @description Represents a simulated Linux shell.
  */
-class Shell
+export default class Shell
 {
+  /**
+   * @description Contains user and host login details.
+   */
+  public readonly login: ShellLogin;
+
+  /**
+   * @description Determines whether the shell has exited.
+   */
   private didExit: boolean;
 
   /**
@@ -27,16 +48,6 @@ class Shell
    */
   private readonly elementStream: ElementStream;
 
-  /**
-   * @description The user currently logged in.
-   */
-  public user: string;
-
-  /**
-   * @description The name of the host.
-   */
-  public host: string;
-
   private readonly exitFunc?: (code: number) => void;
 
   private readonly clearFunc?: () => void;
@@ -45,23 +56,20 @@ class Shell
    * @description Creates a new simulated Linux shell.
    *
    * @param elementStream a stream of React elements where new program output can be appended
-   * @param defaultUser   the user who is logged in at the start of the shell session
-   * @param defaultHost   the name of the host machine at the start of the shell session
+   * @param login         an object describing the user and host
    * @param exitFunc      an optional function that instructs the environment to exit with a given exit code
    * @param clearFunc     an optional function that instructs the environment to clear its output buffer
    */
   public constructor(
     elementStream: ElementStream,
-    defaultUser: string,
-    defaultHost: string,
+    login: ShellLogin,
     exitFunc?: (code: number) => void,
     clearFunc?: () => void
   ) {
     this.didExit = false;
     this.lastExitCode = 0;
     this.elementStream = elementStream;
-    this.user = defaultUser;
-    this.host = defaultHost;
+    this.login = login;
     this.exitFunc = exitFunc;
     this.clearFunc = clearFunc;
   }
@@ -100,19 +108,6 @@ class Shell
    */
   public exec(command: string): Shell
   {
-    if (command === "clear")
-    {
-      console.log("CLEARING...");
-      this.clear();
-    }
-    else if (command === "exit")
-    {
-      console.log("EXITING...");
-      this.exit(0);
-    }
-
     return this;
   }
 }
-
-export default Shell;

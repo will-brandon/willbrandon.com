@@ -11,6 +11,7 @@
 import {ReactElement, useEffect, useRef} from 'react';
 import './Prompt.css';
 import PromptMessage from "./PromptMessage";
+import {ShellLogin} from "../shell/Shell";
 
 /**
  * @description Defines the properties that must be provided to a terminal prompt component.
@@ -18,14 +19,9 @@ import PromptMessage from "./PromptMessage";
 interface PromptProps
 {
   /**
-   * @description The user currently logged in.
+   * @description Contains the user and host login details.
    */
-  user: string;
-
-  /**
-   * @description The name of the host.
-   */
-  host: string;
+  login: ShellLogin;
 
   /**
    * @description An optional function that handles a command when the user submits the input.
@@ -143,7 +139,7 @@ const Prompt = (props: PromptProps): ReactElement => {
   // Render the terminal prompt message and input.
   return (
     <div className="terminal-prompt">
-      <PromptMessage user={props.user} host={props.host} />
+      <PromptMessage login={props.login} />
       <input type="text" ref={inputRef}></input>
     </div>
   );

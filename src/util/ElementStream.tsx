@@ -13,18 +13,13 @@ import React, {ReactElement} from 'react';
 /**
  * @description Represents an unbuffered stream of React elements.
  */
-class ElementStream
+export default class ElementStream
 {
   
   /**
    * @description A function that receives an output stream element.
    */
   private readonly receiver: (element: ReactElement) => void;
-  
-  /**
-   * @description An optional function that flushes the receiver's output buffer.
-   */
-  private readonly flushFunc?: () => void;
   
   /**
    * @description Counts how many elements have flowed through the stream.
@@ -35,12 +30,10 @@ class ElementStream
    * @description Creates a new React element stream.
    *
    * @param receiver  a function that receives an output stream element
-   * @param flushFunc an optional function that flushes the receiver's output buffer
    */
-  public constructor(receiver: (element: ReactElement) => void, flushFunc?: () => void)
+  public constructor(receiver: (element: ReactElement) => void)
   {
     this.receiver = receiver;
-    this.flushFunc = flushFunc;
     
     // The flow count starts at 0 since no elements have been pushed yet.
     this.flowCount = 0;
@@ -69,23 +62,4 @@ class ElementStream
     // Return this object for convenience.
     return this;
   }
-  
-  /**
-   * @description Flushes the receiver buffer if a flusher function was given upon construction of the stream.
-   *
-   * @return  the element stream object for convenience
-   */
-  public flush(): ElementStream
-  {
-    // If a flusher function was specified use the function to flush the receiver buffer.
-    if (this.flushFunc)
-    {
-      this.flushFunc();
-    }
-    
-    // Return this object for convenience.
-    return this;
-  }
 }
-
-export default ElementStream;
