@@ -13,12 +13,24 @@ export function parseTokens(command: string): string[]
   const tokens: string[] = [];
 
   let workingTokenIndex = 0;
-  let hangingQuote = "";
+  let quoteState: "" | "\"" | "'" | "." = "";
   let hangingEscape = false;
 
   for (let i = 0; i < command.length; i++)
   {
     const char = command.charAt(i);
+
+    if (quoteState === ".")
+    {
+      if (char.trim() === "")
+      {
+        quoteState = "";
+      }
+      else
+      {
+        throw TypeError("Whitespace must immediately follow quoted block.");
+      }
+    }
 
     if (char === "\\")
     {
@@ -28,19 +40,26 @@ export function parseTokens(command: string): string[]
 
     if (!hangingEscape && (char === "'" || char === "\""))
     {
-      if (hangingQuote === char)
+      if (quoteState === char)
       {
-        hangingQuote = "";
+        quoteState = ".";
         continue;
       }
-      else if (hangingQuote === "")
+      else if (quoteState === "")
       {
-        hangingQuote = char;
-        continue;
+        if (tokens[workingTokenIndex])
+        {
+          throw TypeError("Whitespace must immediately precede quoted block.");
+        }
+        else
+        {
+          quoteState = char;
+          continue;
+        }
       }
     }
 
-    if (hangingQuote === "" && char.trim() === "")
+    if (quoteState === "" && char.trim() === "")
     {
       if (tokens[workingTokenIndex])
       {

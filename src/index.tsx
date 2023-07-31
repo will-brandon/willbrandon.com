@@ -14,7 +14,7 @@ import './index.css';
 import App from './App';
 import {parseTokens} from "./util/StringUtil";
 
-const str = "    This is\n   \t an \"exam\"ple 'command'\\\"    that 'I am testing' ri\tght now.\n   ";
+const str = "    This is\n   \t an \"exam\" ple abc 'command' \\\"  \\  that 'I am testing' ri\tght now.\n   ";
 console.log(str);
 console.log(parseTokens(str));
 
