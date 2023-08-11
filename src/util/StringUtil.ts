@@ -13,6 +13,25 @@ export function containsWhitespace(str: string): boolean
   return str.trim().length !== str.length;
 }
 
+export function formatPhoneNumber(num: number): string
+{
+  let str = num.toString(10);
+
+  if (str.length === 10)
+  {
+    str = "1" + str;
+  }
+
+  if (str.length < 10 || str.length > 11)
+  {
+    throw TypeError("Phone number must be 10 or 11 digits.");
+  }
+
+  str = "+" + str.charAt(0) + " (" + str.substring(1, 4) + ") " + str.substring(4, 7) + "-" + str.substring(7, 11);
+
+  return str;
+}
+
 export function parseTokens(command: string): string[]
 {
   const tokens: string[] = [];

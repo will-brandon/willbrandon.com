@@ -30,8 +30,17 @@ div.terminal div.feed pre.line
   display: inline-block;
   padding: 0;
   margin: 0;
-  line-height: 26px;
   font-family: 'Roboto Mono', sans-serif;
   font-size: 18px;
   color: #d9d6d4;
+}
+
+div.terminal div.feed pre.error-line
+{
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto Mono', sans-serif;
+  font-size: 18px;
+  color: #D63434;
 }

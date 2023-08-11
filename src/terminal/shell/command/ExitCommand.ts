@@ -10,15 +10,11 @@
 import Shell from "../Shell";
 import ShellCommand from "./ShellCommand";
 
-const EXIT_COMMAND_NAME = "exit";
-const EXIT_COMMAND_USAGE = EXIT_COMMAND_NAME + ": [code]";
-const EXIT_COMMAND_DESCRIPTION = "Exits the shell session.";
-
 export default class ExitCommand extends ShellCommand
 {
   public constructor()
   {
-    super(EXIT_COMMAND_NAME, EXIT_COMMAND_USAGE, EXIT_COMMAND_DESCRIPTION);
+    super("exit", "exit [code]", "Exits the shell session.");
   }
 
   public override exec(shell: Shell, args: string[]): number
@@ -29,16 +25,17 @@ export default class ExitCommand extends ShellCommand
 
     if (args.length > 1)
     {
-      stream.println("Only one argument is accepted. Usage: " + this.usage);
+      stream.errorln("Only one argument is accepted. Usage: " + this.usage);
       return 1;
     }
-    else if (args.length === 1)
+
+    if (args.length === 1)
     {
       code = parseInt(args[0], 10);
 
       if (Number.isNaN(code))
       {
-        stream.println("Invalid exit code given: '" + args[0] + "'");
+        stream.errorln("Invalid exit code given: '" + args[0] + "'");
         return 1;
       }
     }

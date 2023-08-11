@@ -15,7 +15,7 @@ import Shell, {ShellLogin} from "./shell/Shell";
 import Prompt from "./prompt/Prompt";
 import PromptMessage from "./prompt/PromptMessage";
 
-const TERMINAL_SHELL_NAME = "willshell";
+const TERMINAL_SHELL_NAME = "wsh";
 
 /**
  * @description The default user and host who start logged in when the shell session begins.
@@ -64,7 +64,7 @@ const Terminal = (): ReactElement => {
 
   function exec(command: string): void
   {
-    elementStream.push(<PromptMessage login={shell.login} staticCommand={command} />);
+    elementStream.append(<PromptMessage login={shell.login} staticCommand={command} />).flush();
     shell.exec(command);
     setShell(shell => shell);
   }

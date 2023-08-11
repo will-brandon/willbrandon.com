@@ -14,10 +14,10 @@ import Shell from "../Shell";
 export default abstract class ShellCommand
 {
   public readonly name: string;
-  public readonly usage: string;
-  public readonly description: string;
+  public readonly usage?: string;
+  public readonly description?: string;
 
-  protected constructor(name: string, usage: string, description: string)
+  protected constructor(name: string, usage?: string, description?: string)
   {
     if (containsWhitespace(name))
     {

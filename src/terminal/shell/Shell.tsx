@@ -14,10 +14,14 @@ import CommandSet from "./CommandSet";
 import ShellCommand from "./command/ShellCommand";
 import ExitCommand from "./command/ExitCommand";
 import ClearCommand from "./command/ClearCommand";
+import {GitHubCommand, LinkedInCommand, ResumeCommand} from "./command/NavigationCommands";
 
 const COMMANDS: ShellCommand[] = [
   new ExitCommand(),
-  new ClearCommand()
+  new ClearCommand(),
+  new ResumeCommand(),
+  new LinkedInCommand(),
+  new GitHubCommand()
 ];
 
 export interface ShellLogin
@@ -144,9 +148,7 @@ export default class Shell
     }
     catch
     {
-      this.elementStream.push(
-        <pre className="line">{this.name}: command not found: {commandName}</pre>
-      );
+      this.elementStream.errorln(this.name + ": command not found: " + commandName);
     }
 
     return this;
