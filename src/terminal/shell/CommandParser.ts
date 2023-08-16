@@ -137,7 +137,7 @@ export default class CommandParser {
     else
       this.tokens[this.workingTokenIndex] = this.char;
 
-    return true;
+    return false;
   }
 
   /**
@@ -156,7 +156,6 @@ export default class CommandParser {
     if (this.isWhitespace())
     {
       if (this.hangingEscape || this.openQuoteBlock())
-        //this.lastWasWhitespace = false;
         return false;
 
       // If the quote state was a recent quote block termination state it can now return to an empty quote state since
@@ -164,9 +163,9 @@ export default class CommandParser {
       if (this.quoteState === ".")
         this.quoteState = "";
 
-      //this.lastWasWhitespace = true;
       this.nextToken();
 
+      this.lastWasWhitespace = true;
       return true;
     }
     else
@@ -174,7 +173,6 @@ export default class CommandParser {
       if (this.quoteState === ".")
         throw SyntaxError("Command must contain whitespace immediately after a quote block terminates.");
 
-      //this.lastWasWhitespace = false;
       return false;
     }
   }
@@ -212,21 +210,30 @@ export default class CommandParser {
     {
       case "":
 
-        //if (this.lastWasWhitespace)
-        //  throw SyntaxError("A command cannot start a quote block immediately after a character");
+        if (!this.lastWasWhitespace)
+          throw SyntaxError("A command cannot start a quote block immediately after a character.");
 
         this.quoteState = this.char as QuoteState;
         break;
+
       case this.char:
         this.quoteState = ".";
         break;
+
       case ".":
         break;
+
       default:
         this.push();
     }
 
     return true;
+  }
+
+  private conclude(): boolean
+  {
+    this.lastWasWhitespace = false;
+    return false;
   }
 
   /**
@@ -258,7 +265,8 @@ export default class CommandParser {
       || this.stepEscapeStart()
       || this.stepHangingEscape()
       || this.stepQuote()
-      || this.push();
+      || this.push()
+      || this.conclude();
   }
 
   /**
