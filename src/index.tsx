@@ -22,7 +22,7 @@ const reactRootElement = ReactDOM.createRoot(htmlRootElement);
 const parser = new CommandParser();
 
 function show(str: string): void
-{let msg = "\"" + str + "\": [";
+{let msg = "\"" + str + "\"  -->  [";
 
   const tokens = parser.parse(str);
 
@@ -42,10 +42,10 @@ function show(str: string): void
 
 show("\\\\")
 show("");
-show("ab \\\\ cd hello");
-//show("\"This 'is\" a test!!!\t!");
-//show("  'hello  ' world \"\"'\" ''     I want to \"TEST\" \" strings and escapes.");
-//show("   yup, that \" SHOULD' \" DO it");
+show("ab \\\\    cd hello");
+show("\"This 'is\" a test!!!\t!");
+show("  'hello  ' wo \"\"'\" ''     I \"TEST\" \" this.");
+show("   yup, that \" SHOULD' \" DO it");
 
 // Render the app in the React root element.
 reactRootElement.render(

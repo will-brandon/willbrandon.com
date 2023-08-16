@@ -133,18 +133,28 @@ export default class CommandParser {
     return true;
   }
 
+  /**
+   * @description Increments the working token index to move to the next working token. No increment occurs if the
+   *              current working token doesn't exist yet or is still empty in which case a new token is not needed.
+   */
   private nextToken(): void
   {
-    this.workingTokenIndex++;
+    // Only increment the working token index if the last token exists and is not empty.
+    if (this.tokens[this.workingTokenIndex])
+      this.workingTokenIndex++;
   }
 
   private stepWhitespace(): boolean
   {
+    // If the quote state was a recent quote block termination state it can now return to an empty quote state since
+    // whitespace was seen.
+    if (this.quoteState === ".")
+      this.quoteState = "";
+
     if (!this.isWhitespace() || this.hangingEscape || this.openQuoteBlock())
       return false;
 
     this.nextToken();
-
     return true;
   }
 
@@ -172,6 +182,24 @@ export default class CommandParser {
     throw SyntaxError("Only a quotation mark or backslash can be escaped by a backslash in a command.");
   }
 
+  private stepQuoteBlockStart(): boolean
+  {
+    if (!this.isQuote())
+      return false;
+
+    switch(this.quoteState)
+    {
+      case "":
+        //this.quoteState = this.char as QuoteState;
+        break;
+      case this.char:
+        //this.quoteState = ".";
+        break;
+    }
+
+    return true;
+  }
+
   /**
    * @description Checks the current state to ensure that it is a proper termination state. If any state variable is not
    * in a valid state to terminate an error is thrown.
@@ -197,7 +225,11 @@ export default class CommandParser {
    */
   private step(): void
   {
-    this.stepWhitespace() || this.stepEscapeStart() || this.stepHangingEscape() || this.push();
+    this.stepWhitespace()
+      || this.stepEscapeStart()
+      || this.stepHangingEscape()
+      || this.stepQuoteBlockStart()
+      || this.push();
   }
 
   /**
