@@ -190,11 +190,15 @@ export default class CommandParser {
     switch(this.quoteState)
     {
       case "":
-        //this.quoteState = this.char as QuoteState;
+        this.quoteState = this.char as QuoteState;
         break;
       case this.char:
-        //this.quoteState = ".";
+        this.quoteState = ".";
         break;
+      case ".":
+        break;
+      default:
+        this.push();
     }
 
     return true;
