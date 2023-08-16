@@ -21,7 +21,7 @@ export default class ClearCommand extends ShellCommand
   {
     if (args.length > 0)
     {
-      shell.elementStream.errorln("No arguments are accepted.");
+      shell.printStream.errorln("No arguments are accepted.");
       return 1;
     }
 

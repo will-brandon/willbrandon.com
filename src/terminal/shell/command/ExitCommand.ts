@@ -19,13 +19,13 @@ export default class ExitCommand extends ShellCommand
 
   public override exec(shell: Shell, args: string[]): number
   {
-    const stream = shell.elementStream;
+    const printStream = shell.printStream;
 
     let code = 0;
 
     if (args.length > 1)
     {
-      stream.errorln("Only one argument is accepted. Usage: " + this.usage);
+      printStream.errorln("Only one argument is accepted. Usage: " + this.usage);
       return 1;
     }
 
@@ -35,12 +35,12 @@ export default class ExitCommand extends ShellCommand
 
       if (Number.isNaN(code))
       {
-        stream.errorln("Invalid exit code given: '" + args[0] + "'");
+        printStream.errorln("Invalid exit code given: '" + args[0] + "'");
         return 1;
       }
     }
 
-    stream
+    printStream
       .println("")
       .println("Exiting with code " + code)
       .println("")

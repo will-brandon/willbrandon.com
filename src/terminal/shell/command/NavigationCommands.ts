@@ -26,13 +26,13 @@ class NavigationCommands extends ShellCommand
 
   public override exec(shell: Shell, args: string[]): number
   {
-    const stream = shell.elementStream;
+    const printStream = shell.printStream;
 
     let newTab = true;
 
     if (args.length > 1)
     {
-      stream.errorln("Only one argument is allowed. Usage: " + this.usage);
+      printStream.errorln("Only one argument is allowed. Usage: " + this.usage);
       return 1;
     }
 
@@ -46,7 +46,7 @@ class NavigationCommands extends ShellCommand
           newTab = false;
           break;
         default:
-          stream.errorln("Invalid option '" + args[0] + "'. Usage: " + this.usage);
+          printStream.errorln("Invalid option '" + args[0] + "'. Usage: " + this.usage);
           return 1;
       }
     }

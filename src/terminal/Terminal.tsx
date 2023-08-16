@@ -10,10 +10,10 @@
 
 import {ReactElement, useEffect, useRef, useState} from 'react';
 import './Terminal.css';
-import ElementStream from './../util/ElementStream';
 import Shell, {ShellLogin} from "./shell/Shell";
 import Prompt from "./prompt/Prompt";
 import PromptMessage from "./prompt/PromptMessage";
+import ElementPrintStream from "../util/stream/ElementPrintStream";
 
 const TERMINAL_SHELL_NAME = "wsh";
 
@@ -54,17 +54,17 @@ const Terminal = (): ReactElement => {
     setFeed([]);
   }
 
-  // Create a stream of the React elements output by the simulated Linux shell.
-  const [elementStream] = useState<ElementStream>(new ElementStream(pushFeed));
+  // Create a print stream of the React elements output by the simulated Linux shell.
+  const [printStream] = useState<ElementPrintStream>(new ElementPrintStream(pushFeed));
 
   // Manage the state of a simulated Linux shell.
   const [shell, setShell] = useState<Shell>(
-    new Shell(TERMINAL_SHELL_NAME, DEFAULT_TERMINAL_SHELL_LOGIN, elementStream, undefined, clearFeed)
+    new Shell(TERMINAL_SHELL_NAME, DEFAULT_TERMINAL_SHELL_LOGIN, printStream, undefined, clearFeed)
   );
 
   function exec(command: string): void
   {
-    elementStream.append(<PromptMessage login={shell.login} staticCommand={command} />).flush();
+    printStream.push(<PromptMessage login={shell.login} staticCommand={command} />);
     shell.exec(command);
     setShell(shell => shell);
   }

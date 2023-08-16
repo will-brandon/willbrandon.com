@@ -25,7 +25,17 @@ div.terminal
   background-color: #212121;
 }
 
-div.terminal div.feed pre.line
+div.terminal div.feed
+{
+  display: block;
+}
+
+div.terminal div.feed div.stream-item
+{
+  display: block;
+}
+
+div.terminal div.feed div.stream-item pre.line
 {
   display: inline-block;
   padding: 0;
@@ -35,7 +45,7 @@ div.terminal div.feed pre.line
   color: #d9d6d4;
 }
 
-div.terminal div.feed pre.error-line
+div.terminal div.feed div.stream-item pre.line pre.error
 {
   display: inline-block;
   padding: 0;
@@ -43,4 +53,14 @@ div.terminal div.feed pre.error-line
   font-family: 'Roboto Mono', sans-serif;
   font-size: 18px;
   color: #D63434;
+}
+
+div.terminal div.feed div.stream-item pre.line a
+{
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto Mono', sans-serif;
+  font-size: 18px;
+  color: #86cfff;
 }

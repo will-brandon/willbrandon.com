@@ -8,16 +8,18 @@
  * @description Defines a class that represents a simulated Linux shell.
  */
 
-import ElementStream from './../../util/ElementStream';
 import {parseTokens} from "../../util/StringUtil";
 import CommandSet from "./CommandSet";
 import ShellCommand from "./command/ShellCommand";
 import ExitCommand from "./command/ExitCommand";
 import ClearCommand from "./command/ClearCommand";
 import {GitHubCommand, LinkedInCommand, ResumeCommand} from "./command/NavigationCommands";
+import ElementPrintStream from "../../util/stream/ElementPrintStream";
+import EchoCommand from "./command/EchoCommand";
 
 const COMMANDS: ShellCommand[] = [
   new ExitCommand(),
+  new EchoCommand(),
   new ClearCommand(),
   new ResumeCommand(),
   new LinkedInCommand(),
@@ -50,9 +52,9 @@ export default class Shell
   public readonly login: ShellLogin;
 
   /**
-   * @description The stream of React elements that the shell has output.
+   * @description The print stream of React elements that the shell has output.
    */
-  public readonly elementStream: ElementStream;
+  public readonly printStream: ElementPrintStream;
 
   private readonly onExit?: (code: number) => void;
 
@@ -73,22 +75,22 @@ export default class Shell
   /**
    * @description Creates a new simulated Linux shell.
    *
-   * @param name          the name of the shell
-   * @param login         an object describing the user and host
-   * @param elementStream a stream of React elements where new program output can be appended
-   * @param onExit        an optional function that instructs the environment to exit with a given exit code
-   * @param onClear       an optional function that instructs the environment to clear its output buffer
+   * @param name        the name of the shell
+   * @param login       an object describing the user and host
+   * @param printStream a print stream of React elements where new program output can be appended
+   * @param onExit      an optional function that instructs the environment to exit with a given exit code
+   * @param onClear     an optional function that instructs the environment to clear its output buffer
    */
   public constructor(
     name: string,
     login: ShellLogin,
-    elementStream: ElementStream,
+    printStream: ElementPrintStream,
     onExit?: (code: number) => void,
     onClear?: () => void
   ) {
     this.name = name;
     this.login = login;
-    this.elementStream = elementStream;
+    this.printStream = printStream;
     this.onExit = onExit;
     this.onClear = onClear;
     this.commandSet = new CommandSet();
@@ -148,7 +150,7 @@ export default class Shell
     }
     catch
     {
-      this.elementStream.errorln(this.name + ": command not found: " + commandName);
+      this.printStream.errorln(this.name + ": command not found: " + commandName);
     }
 
     return this;

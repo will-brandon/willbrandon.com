@@ -9,6 +9,7 @@
  */
 
 import React, {ReactElement} from 'react';
+import {v4 as uuid} from 'uuid';
 
 /**
  * @description Represents an unbuffered stream of React elements.
@@ -21,12 +22,6 @@ export default class ElementStream
   private readonly receiver: (element: ReactElement) => void;
   
   /**
-   * @description Counts how many elements have pushed into the stream during the stream's lifespan. This is useful for
-   * assigning each element an identifier key that is unique within the stream.
-   */
-  private flowCount: number;
-  
-  /**
    * @description Creates a new React element stream.
    *
    * @param receiver  a function that receives an output stream element
@@ -35,9 +30,6 @@ export default class ElementStream
   {
     // The receiver is initialized from the constructor.
     this.receiver = receiver;
-    
-    // The flow count starts at 0 since no elements have been pushed yet.
-    this.flowCount = 0;
   }
   
   /**
@@ -49,12 +41,9 @@ export default class ElementStream
    */
   public push(element: ReactElement): ElementStream
   {
-    // Increment the flow count indicating that a new item has been pushed.
-    this.flowCount += 1;
-    
     // Wrap the element in a div with a React render-identifier key.
     const identifiableElement = (
-      <div key={this.flowCount} className="stream-item">{element}</div>
+      <div key={uuid()} className="stream-item">{element}</div>
     );
 
     // Pass the identifiable element to the receiver.

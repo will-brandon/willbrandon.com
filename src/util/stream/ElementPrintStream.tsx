@@ -9,6 +9,7 @@
  */
 
 import React, {ReactElement} from 'react';
+import {v4 as uuid} from 'uuid';
 import ElementStream from "./ElementStream";
 
 /**
@@ -35,7 +36,10 @@ export default class ElementPrintStream extends ElementStream
   {
     this.push(
       <React.Fragment>
-        {this.lineBuffer}
+        {
+          this.lineBuffer.map(item =>
+            <pre key={uuid()} className="line">{item}</pre>)
+        }
       </React.Fragment>
     );
 
@@ -64,6 +68,8 @@ export default class ElementPrintStream extends ElementStream
   {
     // Split the string into multiple lines.
     const lines = str.split("\n");
+
+    console.log(lines);
 
     // Add each line to the stream and delimiter them with line breaks,
     for (let i = 0; i < lines.length; i++)
@@ -108,7 +114,24 @@ export default class ElementPrintStream extends ElementStream
 
   /**
    * @description Prints a new error string into the stream. CSS styles should be assigned. Newlines are delimitered
-   * with HTML line breaks.The stream is flushed immediately.
+   * with HTML line breaks.
+   *
+   * @param str the string to add to the stream
+   *
+   * @return  the element stream object for convenience
+   */
+  public error(str?: string): ElementPrintStream
+  {
+    // Print the message in an "error-line" HTML class pre element.
+    this.print(str, "error");
+
+    // Return this object for convenience.
+    return this;
+  }
+
+  /**
+   * @description Prints a new error string into the stream. CSS styles should be assigned. Newlines are delimitered
+   * with HTML line breaks. The stream is flushed immediately.
    *
    * @param str the string to add to the stream
    *
@@ -117,7 +140,24 @@ export default class ElementPrintStream extends ElementStream
   public errorln(str?: string): ElementPrintStream
   {
     // Print the message in an "error-line" HTML class pre element.
-    this.println(str, "error-line");
+    this.println(str, "error");
+
+    // Return this object for convenience.
+    return this;
+  }
+
+  public link(label: string, ref: string = ".", newTab: boolean = false): ElementPrintStream
+  {
+    if (label.includes("\n"))
+    {
+      throw TypeError("Link labels cannot contain newline characters.");
+    }
+
+    const target = newTab ? "_blank" : "_self";
+
+    this.lineBuffer.push(
+      <a href={ref} target={target}>{label}</a>
+    );
 
     // Return this object for convenience.
     return this;
