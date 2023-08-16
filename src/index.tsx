@@ -44,7 +44,7 @@ show("\\\\")
 show("");
 show("ab \\\\    cd hello");
 show("\"This 'is\" a test!!!\t!");
-show("  'hello ' ' wo \"\" '  \" ''     I \" TEST \" \" this.");
+show("  'hello ' e' wo \"\" '  \" ''     I \" TEST \" \" this.");
 show("   yup, that \" SHOULD' \" DO it");
 
 // Render the app in the React root element.

@@ -57,6 +57,11 @@ export default class CommandParser {
   private hangingEscape: boolean;
 
   /**
+   * @description Indicates whether the last character processed was whitespace.
+   */
+  private lastWasWhitespace: boolean;
+
+  /**
    * @description Creates a new command parser.
    */
   public constructor() {
@@ -67,6 +72,7 @@ export default class CommandParser {
     this.workingTokenIndex = 0;
     this.quoteState = "";
     this.hangingEscape = false;
+    this.lastWasWhitespace = true;
   }
 
   /**
@@ -79,6 +85,7 @@ export default class CommandParser {
     this.workingTokenIndex = 0;
     this.quoteState = "";
     this.hangingEscape = false;
+    this.lastWasWhitespace = true;
   }
 
   /**
@@ -146,16 +153,29 @@ export default class CommandParser {
 
   private stepWhitespace(): boolean
   {
-    // If the quote state was a recent quote block termination state it can now return to an empty quote state since
-    // whitespace was seen.
-    if (this.quoteState === ".")
-      this.quoteState = "";
+    if (this.isWhitespace())
+    {
+      if (this.hangingEscape || this.openQuoteBlock())
+        return false;
 
-    if (!this.isWhitespace() || this.hangingEscape || this.openQuoteBlock())
+      // If the quote state was a recent quote block termination state it can now return to an empty quote state since
+      // whitespace was seen.
+      if (this.quoteState === ".")
+        this.quoteState = "";
+
+      this.lastWasWhitespace = true;
+      this.nextToken();
+
+      return true;
+    }
+    else
+    {
+      if (this.quoteState === ".")
+        throw SyntaxError("Command must contain whitespace immediately after a quote block terminates.");
+
+      this.lastWasWhitespace = false;
       return false;
-
-    this.nextToken();
-    return true;
+    }
   }
 
   private stepEscapeStart(): boolean
@@ -182,7 +202,7 @@ export default class CommandParser {
     throw SyntaxError("Only a quotation mark or backslash can be escaped by a backslash in a command.");
   }
 
-  private stepQuoteBlockStart(): boolean
+  private stepQuote(): boolean
   {
     if (!this.isQuote())
       return false;
@@ -232,7 +252,7 @@ export default class CommandParser {
     this.stepWhitespace()
       || this.stepEscapeStart()
       || this.stepHangingEscape()
-      || this.stepQuoteBlockStart()
+      || this.stepQuote()
       || this.push();
   }
 
