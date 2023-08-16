@@ -156,6 +156,7 @@ export default class CommandParser {
     if (this.isWhitespace())
     {
       if (this.hangingEscape || this.openQuoteBlock())
+        //this.lastWasWhitespace = false;
         return false;
 
       // If the quote state was a recent quote block termination state it can now return to an empty quote state since
@@ -163,7 +164,7 @@ export default class CommandParser {
       if (this.quoteState === ".")
         this.quoteState = "";
 
-      this.lastWasWhitespace = true;
+      //this.lastWasWhitespace = true;
       this.nextToken();
 
       return true;
@@ -173,7 +174,7 @@ export default class CommandParser {
       if (this.quoteState === ".")
         throw SyntaxError("Command must contain whitespace immediately after a quote block terminates.");
 
-      this.lastWasWhitespace = false;
+      //this.lastWasWhitespace = false;
       return false;
     }
   }
@@ -207,9 +208,13 @@ export default class CommandParser {
     if (!this.isQuote())
       return false;
 
-    switch(this.quoteState)
+    switch (this.quoteState)
     {
       case "":
+
+        //if (this.lastWasWhitespace)
+        //  throw SyntaxError("A command cannot start a quote block immediately after a character");
+
         this.quoteState = this.char as QuoteState;
         break;
       case this.char:
