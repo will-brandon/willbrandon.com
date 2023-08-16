@@ -69,8 +69,6 @@ export default class ElementPrintStream extends ElementStream
     // Split the string into multiple lines.
     const lines = str.split("\n");
 
-    console.log(lines);
-
     // Add each line to the stream and delimiter them with line breaks,
     for (let i = 0; i < lines.length; i++)
     {

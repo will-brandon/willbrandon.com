@@ -76,7 +76,7 @@ const Terminal = (): ReactElement => {
   // Manage the state of a simulated Linux shell.
   const [shell, setShell] = useState<Shell>(
 
-    // The shell uses the print stream and has a clear callback but does not need an exit callback.
+    // The shell uses the print stream and has a clear callback but does not need an on-exit callback.
     new Shell(TERMINAL_SHELL_NAME, DEFAULT_TERMINAL_SHELL_LOGIN, printStream, undefined, clearFeed)
   );
 

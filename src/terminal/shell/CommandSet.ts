@@ -35,13 +35,13 @@ export default class CommandSet
     });
   }
 
-  public exec(shell: Shell, name: string, args: string[]): number
+  public exec(shell: Shell, name: string, args: string[]): number | undefined
   {
     const command = this.find(name);
 
     if (!command)
     {
-      throw TypeError("Command named " + name + " doesn't exist in the set.");
+      return undefined;
     }
 
     return command.exec(shell, args);

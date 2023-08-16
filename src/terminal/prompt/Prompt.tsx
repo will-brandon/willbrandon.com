@@ -104,13 +104,18 @@ const Prompt = (props: PromptProps): ReactElement => {
       }
     }
 
+    /**
+     * @description Performs the appropriate action when the value of the input is updated.
+     */
     function onInputValueChange()
     {
+      // If an on-change handler was provided call it and give it the new input value.
       if (props.onChange)
       {
         props.onChange(currentInput.value);
       }
 
+      // Resize the input to fit its new value after the update.
       fitInputToText();
     }
 
@@ -125,7 +130,7 @@ const Prompt = (props: PromptProps): ReactElement => {
       // If focus is ever lost, immediately regain it.
       currentInput.addEventListener("focusout", focusInput);
 
-      // When the input value changes resize the input to the value.
+      // Delegate to an input value change handler to handle the event
       currentInput.addEventListener("input", onInputValueChange);
     }
 

@@ -47,6 +47,7 @@ const PromptMessage = (props: PromptMessageProps): ReactElement => {
       <pre className="host">{props.login.host}</pre>
       <pre>$ </pre>
       {
+        // If a static command is provided include it after the prompt.
         props.staticCommand ? <pre>{props.staticCommand}</pre> : ""
       }
     </div>
