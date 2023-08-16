@@ -29,12 +29,17 @@ type QuoteState = "" | "\"" | "'" | ".";
  *              each character in a linear format without ever looking backward at previously encountered characters.
  *              The parser works like a state machine that resets and starts fresh for each input string.
  */
-export default class CommandParser
-{
+export default class CommandParser {
   /**
    * @description An array of tokens that will be accumulated.
    */
   private tokens: string[];
+
+  /**
+   * @description The current character being analyzed. It is encoded as a string because Typescript doesn't have a
+   *              character type however its length should always be 1 when the parser steps.
+   */
+  private char: string;
 
   /**
    * @description Indicates the index of the token currently being worked on within the array.
@@ -54,11 +59,11 @@ export default class CommandParser
   /**
    * @description Creates a new command parser.
    */
-  public constructor()
-  {
+  public constructor() {
     // Each time the parser begins parsing the state is reset. The state values are initialized in the constructor
     // simply for type compliance so that they do not have to be optional types.
     this.tokens = [];
+    this.char = "\0";
     this.workingTokenIndex = 0;
     this.quoteState = "";
     this.hangingEscape = false;
@@ -67,26 +72,110 @@ export default class CommandParser
   /**
    * @description Resets the state of the parser. All state related fields are reinitialized to their start values.
    */
-  private reset(): void
-  {
+  private reset(): void {
     // Set each state variable to it's initial value.
     this.tokens = [];
+    this.char = "\0";
     this.workingTokenIndex = 0;
     this.quoteState = "";
     this.hangingEscape = false;
   }
 
   /**
-   * @description Accepts the next character in the input string and updates the state accordingly. The token array will
-   *              be updated during this process.
+   * @description Determines whether the current character is any type of whitespace character.
    *
-   * @param char  the character to process (encoded as a string because Typescript doesn't have a character type).
+   * @return  true if and only if the current character is whitespace
+   */
+  private isWhitespace(): boolean
+  {
+    // Use the trim function which removes any whitespace then check if the character string is empty. If it is empty,
+    // there must have been no characters besides whitespace.
+    return this.char.trim() === "";
+  }
+
+  /**
+   * @description Determines whether the current character is a backslash.
+   *
+   * @return  true if and only if the current character is a backslash
+   */
+  private isBackslash(): boolean
+  {
+    return this.char === "\\";
+  }
+
+  /**
+   * @description Determines whether the current character is either a single or a double quotation mark.
+   *
+   * @return  true if and only if the current character is a quote
+   */
+  private isQuote(): boolean
+  {
+    return this.char === "\"" || this.char === "'";
+  }
+
+  private push(): boolean
+  {
+    if (this.tokens[this.workingTokenIndex])
+    {
+      this.tokens[this.workingTokenIndex] += this.char;
+    }
+    else
+    {
+      this.tokens[this.workingTokenIndex] = this.char;
+    }
+
+    return true;
+  }
+
+  private nextToken(): void
+  {
+    this.workingTokenIndex++;
+  }
+
+  private stepEscapeStart(): boolean
+  {
+    console.log("CHECK ESCAPE START");
+    if (this.isBackslash() && !this.hangingEscape)
+    {
+      this.hangingEscape = true;
+      return true;
+    }
+
+    return false;
+  }
+
+  private stepHangingEscape(): boolean
+  {
+    console.log("CHECK HANGING ESCAPE");
+    if (!this.hangingEscape)
+    {
+      return false;
+    }
+
+    if (this.isQuote() || this.isBackslash())
+    {
+      this.push();
+      this.hangingEscape = false;
+      return true;
+    }
+
+    throw SyntaxError("Only a quotation mark or backslash can be escaped by a backslash.");
+  }
+
+  private checkPrematureTermination(): void
+  {
+
+  }
+
+  /**
+   * @description Steps the parser on the current character and updates the state accordingly. The token array may be
+   *              updated during this process.
    *
    * @throws SyntaxError if the character generates a syntax error in the current state
    */
-  private acceptChar(char: string): void
+  private step(): void
   {
-    this.tokens.push(char);
+    this.stepEscapeStart() || this.stepHangingEscape() || this.push();
   }
 
   /**
@@ -106,9 +195,15 @@ export default class CommandParser
     // Process the character at each index within the input string one-by-one in a linear forward-looking process.
     for (let i = 0; i < command.length; i++)
     {
-      // Insert the character currently in focus to the character accepted function.
-      this.acceptChar(command.charAt(i));
+      // Put the character currently in focus to into the character state.
+      this.char = command.charAt(i);
+
+      // Step the parser with the new character.
+      this.step();
     }
+
+    // Ensure the state is in a valid end configuration upon input string termination.
+    this.checkPrematureTermination();
 
     // Return the accumulated token array.
     return this.tokens;

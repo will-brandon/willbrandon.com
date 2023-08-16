@@ -27,11 +27,12 @@ function show(str: string): void
     console.log(parser.parse(str));
 }
 
-show("");
-show("a b c");
-show("\"This 'is\" a test!!!\t!");
-show("  'hello  ' world \"\"'\" ''     I want to \"TEST\" \" strings and escapes.");
-show("   yup, that \" SHOULD' \" DO it");
+show("\\")
+//show("");
+//show("a \\\\ c");
+//show("\"This 'is\" a test!!!\t!");
+//show("  'hello  ' world \"\"'\" ''     I want to \"TEST\" \" strings and escapes.");
+//show("   yup, that \" SHOULD' \" DO it");
 
 // Render the app in the React root element.
 reactRootElement.render(
