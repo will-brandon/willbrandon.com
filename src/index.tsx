@@ -22,14 +22,27 @@ const reactRootElement = ReactDOM.createRoot(htmlRootElement);
 const parser = new CommandParser();
 
 function show(str: string): void
-{
-    console.log(str);
-    console.log(parser.parse(str));
+{let msg = "\"" + str + "\": [";
+
+  const tokens = parser.parse(str);
+
+  if (tokens.length > 0)
+  {
+    msg += "\"" + tokens[0] + "\"";
+
+    tokens.slice(1).forEach(token => {
+      msg += ", " + "\"" + token + "\"";
+    });
+  }
+
+  msg += "]";
+
+  console.log(msg);
 }
 
-show("\\")
-//show("");
-//show("a \\\\ c");
+show("\\\\")
+show("");
+show("ab \\\\ cd hello");
 //show("\"This 'is\" a test!!!\t!");
 //show("  'hello  ' world \"\"'\" ''     I want to \"TEST\" \" strings and escapes.");
 //show("   yup, that \" SHOULD' \" DO it");

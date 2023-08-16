@@ -113,16 +113,22 @@ export default class CommandParser {
     return this.char === "\"" || this.char === "'";
   }
 
+  /**
+   * @description Determines whether the current quote state indicates an open single or a double quote block.
+   *
+   * @return  true if and only if a quote block is open
+   */
+  private openQuoteBlock(): boolean
+  {
+    return this.quoteState === "\"" || this.quoteState === "'";
+  }
+
   private push(): boolean
   {
     if (this.tokens[this.workingTokenIndex])
-    {
       this.tokens[this.workingTokenIndex] += this.char;
-    }
     else
-    {
       this.tokens[this.workingTokenIndex] = this.char;
-    }
 
     return true;
   }
@@ -132,25 +138,29 @@ export default class CommandParser {
     this.workingTokenIndex++;
   }
 
+  private stepWhitespace(): boolean
+  {
+    if (!this.isWhitespace() || this.hangingEscape || this.openQuoteBlock())
+      return false;
+
+    this.nextToken();
+
+    return true;
+  }
+
   private stepEscapeStart(): boolean
   {
-    console.log("CHECK ESCAPE START");
-    if (this.isBackslash() && !this.hangingEscape)
-    {
-      this.hangingEscape = true;
-      return true;
-    }
+    if (!this.isBackslash() || this.hangingEscape)
+      return false;
 
-    return false;
+    this.hangingEscape = true;
+    return true;
   }
 
   private stepHangingEscape(): boolean
   {
-    console.log("CHECK HANGING ESCAPE");
     if (!this.hangingEscape)
-    {
       return false;
-    }
 
     if (this.isQuote() || this.isBackslash())
     {
@@ -159,23 +169,35 @@ export default class CommandParser {
       return true;
     }
 
-    throw SyntaxError("Only a quotation mark or backslash can be escaped by a backslash.");
+    throw SyntaxError("Only a quotation mark or backslash can be escaped by a backslash in a command.");
   }
 
-  private checkPrematureTermination(): void
+  /**
+   * @description Checks the current state to ensure that it is a proper termination state. If any state variable is not
+   * in a valid state to terminate an error is thrown.
+   *
+   * @throws SyntaxError  if any aspect of the state is not prepared for the string to terminate
+   */
+  private assertTerminationState(): void
   {
+    // Ensure a hanging backslash is not the last character.
+    if (this.hangingEscape)
+      throw SyntaxError("A command cannot end with a hanging unresolved escape.");
 
+    // Ensure there is no open quote block.
+    if (this.openQuoteBlock())
+      throw SyntaxError("A command cannot end without terminating all quoted blocks.")
   }
 
   /**
    * @description Steps the parser on the current character and updates the state accordingly. The token array may be
    *              updated during this process.
    *
-   * @throws SyntaxError if the character generates a syntax error in the current state
+   * @throws SyntaxError  if the character generates a syntax error in the current state
    */
   private step(): void
   {
-    this.stepEscapeStart() || this.stepHangingEscape() || this.push();
+    this.stepWhitespace() || this.stepEscapeStart() || this.stepHangingEscape() || this.push();
   }
 
   /**
@@ -185,7 +207,7 @@ export default class CommandParser {
    *
    * @return  an array containing the token strings
    *
-   * @throws SyntaxError if there is a syntax error in the command while parsing.
+   * @throws SyntaxError  if there is a syntax error in the command while parsing.
    */
   public parse(command: string): string[]
   {
@@ -203,7 +225,7 @@ export default class CommandParser {
     }
 
     // Ensure the state is in a valid end configuration upon input string termination.
-    this.checkPrematureTermination();
+    this.assertTerminationState();
 
     // Return the accumulated token array.
     return this.tokens;
