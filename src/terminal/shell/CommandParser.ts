@@ -130,12 +130,12 @@ export default class CommandParser {
     return this.quoteState === "\"" || this.quoteState === "'";
   }
 
-  private push(): boolean
+  private push(empty: boolean = false): boolean
   {
     if (this.tokens[this.workingTokenIndex])
-      this.tokens[this.workingTokenIndex] += this.char;
+      this.tokens[this.workingTokenIndex] += empty ? "" : this.char;
     else
-      this.tokens[this.workingTokenIndex] = this.char;
+      this.tokens[this.workingTokenIndex] = empty ? "" : this.char;
 
     return false;
   }
@@ -146,8 +146,8 @@ export default class CommandParser {
    */
   private nextToken(): void
   {
-    // Only increment the working token index if the last token exists and is not empty.
-    if (this.tokens[this.workingTokenIndex])
+    // Only increment the working token index if the last token exists (it is okay if it is empty).
+    if (this.tokens[this.workingTokenIndex] !== undefined)
       this.workingTokenIndex++;
   }
 
@@ -217,6 +217,7 @@ export default class CommandParser {
         break;
 
       case this.char:
+        this.push(true);
         this.quoteState = ".";
         break;
 
@@ -250,7 +251,7 @@ export default class CommandParser {
 
     // Ensure there is no open quote block.
     if (this.openQuoteBlock())
-      throw SyntaxError("A command cannot end without terminating all quoted blocks.")
+      throw SyntaxError("A command cannot end without terminating all quoted blocks.");
   }
 
   /**
