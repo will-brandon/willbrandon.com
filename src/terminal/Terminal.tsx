@@ -15,6 +15,9 @@ import Prompt from "./prompt/Prompt";
 import PromptMessage from "./prompt/PromptMessage";
 import ElementPrintStream from "../util/stream/ElementPrintStream";
 
+/**
+ * @description The name of the shell.
+ */
 const TERMINAL_SHELL_NAME = "wsh";
 
 /**
@@ -54,29 +57,49 @@ const Terminal = (): ReactElement => {
     setFeed([]);
   }
 
-  // Create a print stream of the React elements output by the simulated Linux shell.
-  const [printStream] = useState<ElementPrintStream>(new ElementPrintStream(pushFeed));
+  /**
+   * @description Scrolls the terminal viewport to the far bottom of its content.
+   */
+  function scrollToBottom():  void
+  {
+    viewportRef.current!.scrollTo(0, Number.MAX_SAFE_INTEGER);
+  }
+
+  // Track the state of a print stream for the React elements output by the simulated Linux shell. This stream state
+  // should never be set.
+  const [printStream] = useState<ElementPrintStream>(
+
+      // The print stream flows into the feed buffer.
+      new ElementPrintStream(pushFeed)
+  );
 
   // Manage the state of a simulated Linux shell.
   const [shell, setShell] = useState<Shell>(
+
+    // The shell uses the print stream and has a clear callback but does not need an exit callback.
     new Shell(TERMINAL_SHELL_NAME, DEFAULT_TERMINAL_SHELL_LOGIN, printStream, undefined, clearFeed)
   );
 
+  /**
+   * @description Executes a given command string in the shell.
+   *
+   * @param command a string containing a command
+   */
   function exec(command: string): void
   {
+    // Push a prompt message with the static executed command to the stream so that a history of executed commands are
+    // in the feed.
     printStream.push(<PromptMessage login={shell.login} staticCommand={command} />);
+
+    // Execute the command string in the shell.
     shell.exec(command);
+
+    // Set the shell state to itself signaling a state change within the shell to trigger a rerender.
     setShell(shell => shell);
   }
 
-  function scrollToBottom():  void
-  {
-    viewportRef.current!.scrollTo(0, 100000000);
-  }
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [feed]);
+  // Each time the feed updates scroll to the bottom of the viewport.
+  useEffect(scrollToBottom, [feed]);
 
   // Render the terminal prompt and the stream of React elements from the shell output. Include the command prompt if
   // the shell is active.
@@ -85,6 +108,7 @@ const Terminal = (): ReactElement => {
       <div className="terminal">
         <div className="feed">{feed}</div>
         {
+          // If the shell is active display an interactive prompt.
           shell.isActive() ? <Prompt login={shell.login} onChange={scrollToBottom} onExec={exec} /> : ""
         }
       </div>

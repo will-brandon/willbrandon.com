@@ -13,7 +13,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 
-// Find the root HTML root div element and make it thw React root element.
+// Find the root HTML root div element and make it the React root element.
 const htmlRootElement = document.getElementById('root') as HTMLDivElement
 const reactRootElement = ReactDOM.createRoot(htmlRootElement);
 
