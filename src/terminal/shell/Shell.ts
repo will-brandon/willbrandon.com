@@ -8,7 +8,6 @@
  * @description Defines a class that represents a simulated Linux shell.
  */
 
-import {parseCommandTokens} from "../../util/StringUtil";
 import CommandSet from "./CommandSet";
 import ShellCommand from "./command/ShellCommand";
 import ExitCommand from "./command/ExitCommand";
@@ -16,6 +15,7 @@ import ClearCommand from "./command/ClearCommand";
 import {GitHubCommand, LinkedInCommand, ResumeCommand} from "./command/NavigationCommands";
 import ElementPrintStream from "../../util/stream/ElementPrintStream";
 import EchoCommand from "./command/EchoCommand";
+import CommandParser from "./CommandParser";
 
 /**
  * @description Contains an instance of each command that is recognized by the shell.
@@ -88,6 +88,11 @@ export default class Shell
   public lastExitCode: number;
 
   /**
+   * @description The command parser utility.
+   */
+  private readonly parser: CommandParser;
+
+  /**
    * @description Creates a new simulated Linux shell.
    *
    * @param name        the name of the shell
@@ -118,6 +123,9 @@ export default class Shell
 
     // The last exit code starts as 0.
     this.lastExitCode = 0;
+
+    // Create a command parser that will be used for each command execution.
+    this.parser = new CommandParser();
 
     // Register all the commands.
     this.commandSet.register(...COMMANDS);
@@ -187,8 +195,22 @@ export default class Shell
       throw Error("Inactive shell cannot execute a command.");
     }
 
-    // Parse the command string into an array of tokens.
-    const tokens = parseCommandTokens(command);
+    // Initialize a token array that will be filled with token strings by the parser.
+    let tokens: string[] = [];
+
+    // Try to parse the command string into an array of tokens.
+    try
+    {
+      tokens = this.parser.parse(command);
+    }
+    catch (err: any)
+    {
+      // If a syntax error occurs, print the error message. Otherwise, rethrow any other thrown object.
+      if (err instanceof SyntaxError)
+        this.printStream.errorln(this.name + ": syntax error: " + err.message);
+      else
+        throw err;
+    }
 
     // If the command was empty return immediately.
     if (tokens.length === 0)
