@@ -168,11 +168,10 @@ export default class CommandParser
    */
   private push(empty: boolean = false): boolean
   {
-    // If the token already exists and is not empty append the current character. An empty string could simply be
-    // ignored.
+    // If the token already exists and is not empty append the current character.
     if (this.state.tokens[this.state.workingTokenIndex])
     {
-      this.state.tokens[this.state.workingTokenIndex] += this.state.char;
+      this.state.tokens[this.state.workingTokenIndex] += empty ? "" : this.state.char;
     }
     else
     {
@@ -336,7 +335,7 @@ export default class CommandParser
 
     // If debug logging is enabled log the initial state to the console.
     if (this.debugLogStates)
-      console.log(this.state);
+      console.log(this.state, this.state.tokens);
 
     // Process the character at each index within the input string one-by-one in a linear forward-looking process.
     for (let i = 0; i < command.length; i++)
@@ -349,7 +348,7 @@ export default class CommandParser
 
       // If debug logging is enabled log each state to the console.
       if (this.debugLogStates)
-        console.log(this.state);
+        console.log(this.state, this.state.tokens);
     }
 
     // Ensure the state is in a valid end configuration upon input string termination.
