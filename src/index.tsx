@@ -39,15 +39,16 @@ function show(str: string): void
   console.log(msg);
 }
 
-show("\\\\");
-show("");
-show("ab \\\\    cd hello");
-show(" \"This 'is\" a test!!!\t!");
-show("  'hello '  e ' wo \"\" '  \" ''     I \" TEST \" \" this.");
-show("   yup, that \" SHOULD' \" DO it");
-show("    \\\\\\\"\\\" '\\'\\''");
-show(" '' '' ");
-show("this is a test");
+//show("\\\\");
+//show("");
+//show("ab \\\\    cd hello");
+//show(" \"This 'is\" a test!!!\t!");
+//show("  'hello '  e ' wo \"\" '  \" ''     I \" TEST \" \" this.");
+//show("   yup, that \" SHOULD' \" DO it");
+//show("    \\\\\\\"\\\" '\\'\\''");
+//show(" '' '' ");
+//show("this is a test");
+show("echo \"Shell name: \" $SHELL");
 
 // Render the app in the React root element.
 reactRootElement.render(

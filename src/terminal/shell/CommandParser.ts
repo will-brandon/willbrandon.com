@@ -22,9 +22,56 @@
  *                  so the next character must be whitespace.</li>
  *              </ul>
  */
-type QuoteState = "" | "\"" | "'" | ".";
+type ParserQuoteState = "" | "\"" | "'" | ".";
 
-/// NOTE: PROBLEM ON INPUT: 'echo "Shell name: " $SHELL';
+/**
+ * @description Contains all information about the current state of the parser.
+ */
+interface ParserState
+{
+  /**
+   * @description An array of tokens that will be accumulated.
+   */
+  tokens: string[];
+
+  /**
+   * @description The current character being analyzed. It is encoded as a string because Typescript doesn't have a
+   *              character type however its length should always be 1 when the parser steps.
+   */
+  char: string;
+
+  /**
+   * @description Indicates the index of the token currently being worked on within the array.
+   */
+  workingTokenIndex: number;
+
+  /**
+   * @description Indicates the current quote state.
+   */
+  quoteState: ParserQuoteState;
+
+  /**
+   * @description Indicates whether an escaping backslash was encountered so the following character should be escaped.
+   */
+  hangingEscape: boolean;
+
+  /**
+   * @description Indicates whether the last character processed was whitespace.
+   */
+  lastWasWhitespace: boolean;
+}
+
+/**
+ * @description Defines the initial parser state.
+ */
+const INITIAL_STATE = {
+  tokens: [],
+  char: "\0",
+  workingTokenIndex: 0,
+  quoteState: "",
+  hangingEscape: false,
+  lastWasWhitespace: true
+} as ParserState;
 
 /**
  * @description Parses command strings into tokens. The parser is forward-looking meaning that it steps forward though
@@ -34,35 +81,9 @@ type QuoteState = "" | "\"" | "'" | ".";
 export default class CommandParser
 {
   /**
-   * @description An array of tokens that will be accumulated.
+   * @description Contains all information about the current state of the parser.
    */
-  private tokens: string[];
-
-  /**
-   * @description The current character being analyzed. It is encoded as a string because Typescript doesn't have a
-   *              character type however its length should always be 1 when the parser steps.
-   */
-  private char: string;
-
-  /**
-   * @description Indicates the index of the token currently being worked on within the array.
-   */
-  private workingTokenIndex: number;
-
-  /**
-   * @description Indicates the current quote state.
-   */
-  private quoteState: QuoteState;
-
-  /**
-   * @description Indicates whether an escaping backslash was encountered so the following character should be escaped.
-   */
-  private hangingEscape: boolean;
-
-  /**
-   * @description Indicates whether the last character processed was whitespace.
-   */
-  private lastWasWhitespace: boolean;
+  private state: ParserState;
 
   /**
    * @description Creates a new command parser.
@@ -71,12 +92,7 @@ export default class CommandParser
   {
     // Each time the parser begins parsing the state is reset. The state values are initialized in the constructor
     // simply for type compliance so that they do not have to be optional types.
-    this.tokens = [];
-    this.char = "\0";
-    this.workingTokenIndex = 0;
-    this.quoteState = "";
-    this.hangingEscape = false;
-    this.lastWasWhitespace = true;
+    this.state = INITIAL_STATE;
   }
 
   /**
@@ -84,13 +100,8 @@ export default class CommandParser
    */
   private reset(): void
   {
-    // Set each state variable to it's initial value.
-    this.tokens = [];
-    this.char = "\0";
-    this.workingTokenIndex = 0;
-    this.quoteState = "";
-    this.hangingEscape = false;
-    this.lastWasWhitespace = true;
+    // Set each state variable to it's initial value (stored in initial state constant).
+    this.state = INITIAL_STATE;
   }
 
   /**
@@ -102,7 +113,7 @@ export default class CommandParser
   {
     // Use the trim function which removes any whitespace then check if the character string is empty. If it is empty,
     // there must have been no characters besides whitespace.
-    return this.char.trim() === "";
+    return this.state.char.trim() === "";
   }
 
   /**
@@ -112,7 +123,7 @@ export default class CommandParser
    */
   private isBackslash(): boolean
   {
-    return this.char === "\\";
+    return this.state.char === "\\";
   }
 
   /**
@@ -122,7 +133,7 @@ export default class CommandParser
    */
   private isQuote(): boolean
   {
-    return this.char === "\"" || this.char === "'";
+    return this.state.char === "\"" || this.state.char === "'";
   }
 
   /**
@@ -132,7 +143,7 @@ export default class CommandParser
    */
   private openQuoteBlock(): boolean
   {
-    return this.quoteState === "\"" || this.quoteState === "'";
+    return this.state.quoteState === "\"" || this.state.quoteState === "'";
   }
 
   /**
@@ -149,15 +160,15 @@ export default class CommandParser
   {
     // If the token already exists and is not empty append the current character. An empty string could simply be
     // ignored.
-    if (this.tokens[this.workingTokenIndex])
+    if (this.state.tokens[this.state.workingTokenIndex])
     {
-      this.tokens[this.workingTokenIndex] += this.char;
+      this.state.tokens[this.state.workingTokenIndex] += this.state.char;
     }
     else
     {
       // If the token does not exist in the array or is an empty string, set the current working token to the current
       // character or an empty string
-      this.tokens[this.workingTokenIndex] = empty ? "" : this.char;
+      this.state.tokens[this.state.workingTokenIndex] = empty ? "" : this.state.char;
     }
 
     // Return false to function as an 'or' short-circuiting bypass.
@@ -171,30 +182,30 @@ export default class CommandParser
   private nextToken(): void
   {
     // Only increment the working token index if the last token exists (it is okay if it is empty).
-    if (this.tokens[this.workingTokenIndex] !== undefined)
-      this.workingTokenIndex++;
+    if (this.state.tokens[this.state.workingTokenIndex] !== undefined)
+      this.state.workingTokenIndex++;
   }
 
   private stepWhitespace(): boolean
   {
     if (this.isWhitespace())
     {
-      if (this.hangingEscape || this.openQuoteBlock())
+      if (this.state.hangingEscape || this.openQuoteBlock())
         return false;
 
       // If the quote state was a recent quote block termination state it can now return to an empty quote state since
       // whitespace was seen.
-      if (this.quoteState === ".")
-        this.quoteState = "";
+      if (this.state.quoteState === ".")
+        this.state.quoteState = "";
 
       this.nextToken();
 
-      this.lastWasWhitespace = true;
+      this.state.lastWasWhitespace = true;
       return true;
     }
     else
     {
-      if (this.quoteState === ".")
+      if (this.state.quoteState === ".")
         throw SyntaxError("Command must contain whitespace immediately after a quote block terminates.");
 
       return false;
@@ -203,22 +214,22 @@ export default class CommandParser
 
   private stepEscapeStart(): boolean
   {
-    if (!this.isBackslash() || this.hangingEscape)
+    if (!this.isBackslash() || this.state.hangingEscape)
       return false;
 
-    this.hangingEscape = true;
+    this.state.hangingEscape = true;
     return true;
   }
 
   private stepHangingEscape(): boolean
   {
-    if (!this.hangingEscape)
+    if (!this.state.hangingEscape)
       return false;
 
     if (this.isQuote() || this.isBackslash())
     {
       this.push();
-      this.hangingEscape = false;
+      this.state.hangingEscape = false;
       return true;
     }
 
@@ -230,19 +241,19 @@ export default class CommandParser
     if (!this.isQuote())
       return false;
 
-    switch (this.quoteState)
+    switch (this.state.quoteState)
     {
       case "":
 
-        if (!this.lastWasWhitespace)
+        if (!this.state.lastWasWhitespace)
           throw SyntaxError("A command cannot start a quote block immediately after a character.");
 
-        this.quoteState = this.char as QuoteState;
+        this.state.quoteState = this.state.char as ParserQuoteState;
         break;
 
-      case this.char:
+      case this.state.char:
         this.push(true);
-        this.quoteState = ".";
+        this.state.quoteState = ".";
         break;
 
       case ".":
@@ -257,7 +268,7 @@ export default class CommandParser
 
   private conclude(): boolean
   {
-    this.lastWasWhitespace = false;
+    this.state.lastWasWhitespace = false;
     return false;
   }
 
@@ -270,7 +281,7 @@ export default class CommandParser
   private assertTerminationState(): void
   {
     // Ensure a hanging backslash is not the last character.
-    if (this.hangingEscape)
+    if (this.state.hangingEscape)
       throw SyntaxError("A command cannot end with a hanging unresolved escape.");
 
     // Ensure there is no open quote block.
@@ -317,7 +328,7 @@ export default class CommandParser
     for (let i = 0; i < command.length; i++)
     {
       // Put the character currently in focus to into the character state.
-      this.char = command.charAt(i);
+      this.state.char = command.charAt(i);
 
       // Step the parser with the new character.
       this.step();
@@ -327,6 +338,6 @@ export default class CommandParser
     this.assertTerminationState();
 
     // Return the accumulated token array.
-    return this.tokens;
+    return this.state.tokens;
   }
 }
