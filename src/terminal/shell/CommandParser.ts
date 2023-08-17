@@ -64,7 +64,8 @@ export default class CommandParser {
   /**
    * @description Creates a new command parser.
    */
-  public constructor() {
+  public constructor()
+  {
     // Each time the parser begins parsing the state is reset. The state values are initialized in the constructor
     // simply for type compliance so that they do not have to be optional types.
     this.tokens = [];
@@ -78,7 +79,8 @@ export default class CommandParser {
   /**
    * @description Resets the state of the parser. All state related fields are reinitialized to their start values.
    */
-  private reset(): void {
+  private reset(): void
+  {
     // Set each state variable to it's initial value.
     this.tokens = [];
     this.char = "\0";
@@ -130,13 +132,32 @@ export default class CommandParser {
     return this.quoteState === "\"" || this.quoteState === "'";
   }
 
+  /**
+   * @description Appends the current character to the end of the current working token. If the current working token
+   *              has not yet been created, create it with the current character as its initial value. Optionally an
+   *              empty value can be pumped into the token as well which does nothing if the current token already has a
+   *              value, but it initializes the token to an empty string if it does not already exist.
+   *
+   * @param empty whether an empty string should be pushed instead of the current character
+   *
+   * @return  false under all circumstances so that this function can be used as a bypass in 'or' short-circuit chaining
+   */
   private push(empty: boolean = false): boolean
   {
+    // If the token already exists and is not empty append the current character. An empty string could simply be
+    // ignored.
     if (this.tokens[this.workingTokenIndex])
-      this.tokens[this.workingTokenIndex] += empty ? "" : this.char;
+    {
+      this.tokens[this.workingTokenIndex] += this.char;
+    }
     else
+    {
+      // If the token does not exist in the array or is an empty string, set the current working token to the current
+      // character or an empty string
       this.tokens[this.workingTokenIndex] = empty ? "" : this.char;
+    }
 
+    // Return false to function as an 'or' short-circuiting bypass.
     return false;
   }
 
@@ -262,6 +283,11 @@ export default class CommandParser {
    */
   private step(): void
   {
+    // 'Or' short-circuiting is used to create a waterfall of calls until the first function returns true indicating
+    // that the character at this step was completely handled and no more checks are needed. The order of these
+    // functions is crucial as the commutative result of the boolean expression is discarded, the true importance is the
+    // cascade of calls to check different properties of the character. Refer to the documentation for each function to
+    // understand a comprehensive description of what each check is looking for.
     this.stepWhitespace()
       || this.stepEscapeStart()
       || this.stepHangingEscape()
