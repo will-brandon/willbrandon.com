@@ -18,7 +18,7 @@ import CommandParser from "./terminal/shell/CommandParser";
 const htmlRootElement = document.getElementById('root') as HTMLDivElement
 const reactRootElement = ReactDOM.createRoot(htmlRootElement);
 
-const parser = new CommandParser();
+const parser = new CommandParser(true);
 
 function show(str: string): void
 {let msg = "\"" + str + "\"  -->  [";
@@ -48,7 +48,7 @@ function show(str: string): void
 //show("    \\\\\\\"\\\" '\\'\\''");
 //show(" '' '' ");
 //show("this is a test");
-show("echo \"Shell name: \" $SHELL");
+show("\"A \" B");
 
 // Render the app in the React root element.
 reactRootElement.render(

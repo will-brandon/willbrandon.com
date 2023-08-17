@@ -86,13 +86,23 @@ export default class CommandParser
   private state: ParserState;
 
   /**
-   * @description Creates a new command parser.
+   * @description When enabled the state object is displayed at the start of the parse and after each step.
    */
-  public constructor()
+  private debugLogStates: boolean;
+
+  /**
+   * @description Creates a new command parser.
+   *
+   * @param debugLogStates  when enabled the state object is displayed at the start of the parse and after each step
+   */
+  public constructor(debugLogStates = false)
   {
     // Each time the parser begins parsing the state is reset. The state values are initialized in the constructor
     // simply for type compliance so that they do not have to be optional types.
     this.state = INITIAL_STATE;
+
+    // Set the debug option.
+    this.debugLogStates = debugLogStates;
   }
 
   /**
@@ -324,6 +334,10 @@ export default class CommandParser
     // Reset the state before starting to parse.
     this.reset();
 
+    // If debug logging is enabled log the initial state to the console.
+    if (this.debugLogStates)
+      console.log(this.state);
+
     // Process the character at each index within the input string one-by-one in a linear forward-looking process.
     for (let i = 0; i < command.length; i++)
     {
@@ -332,6 +346,10 @@ export default class CommandParser
 
       // Step the parser with the new character.
       this.step();
+
+      // If debug logging is enabled log each state to the console.
+      if (this.debugLogStates)
+        console.log(this.state);
     }
 
     // Ensure the state is in a valid end configuration upon input string termination.
