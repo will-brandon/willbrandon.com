@@ -29,7 +29,8 @@ type QuoteState = "" | "\"" | "'" | ".";
  *              each character in a linear format without ever looking backward at previously encountered characters.
  *              The parser works like a state machine that resets and starts fresh for each input string.
  */
-export default class CommandParser {
+export default class CommandParser
+{
   /**
    * @description An array of tokens that will be accumulated.
    */

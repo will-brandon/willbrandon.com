@@ -20,11 +20,7 @@ export default class EchoCommand extends ShellCommand
 
   public override exec(shell: Shell, args: string[]): number
   {
-    shell.printStream.print("This is a test 1");
-    shell.printStream.error(" ERROR");
-    shell.printStream.print(" Google: ");
-    shell.printStream.link("Click Me!", "https://www.google.com", true);
-    shell.printStream.println(" <-- Cool huh?");
+    shell.printStream.println(args.join(" "));
 
     return 0;
   }

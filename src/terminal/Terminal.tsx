@@ -89,7 +89,7 @@ const Terminal = (): ReactElement => {
   {
     // Push a prompt message with the static executed command to the stream so that a history of executed commands are
     // in the feed.
-    printStream.push(<PromptMessage login={shell.login} staticCommand={command} />);
+    printStream.push(<PromptMessage login={shell.login()} staticCommand={command} />);
 
     // Execute the command string in the shell.
     shell.exec(command);
@@ -109,7 +109,7 @@ const Terminal = (): ReactElement => {
         <div className="feed">{feed}</div>
         {
           // If the shell is active display an interactive prompt.
-          shell.isActive() ? <Prompt login={shell.login} onChange={scrollToBottom} onExec={exec} /> : ""
+          shell.isActive() ? <Prompt login={shell.login()} onChange={scrollToBottom} onExec={exec} /> : ""
         }
       </div>
     </div>

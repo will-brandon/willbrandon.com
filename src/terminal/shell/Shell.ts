@@ -43,20 +43,15 @@ export interface ShellLogin
 }
 
 /**
+ * @description Defines a union type for shell variables that can be numeric, strings, or empty (undefined).
+ */
+type ShellVarValue = number | string | undefined;
+
+/**
  * @description Represents a simulated Linux shell.
  */
 export default class Shell
 {
-  /**
-   * @description The name of the shell.
-   */
-  public readonly name: string;
-
-  /**
-   * @description Contains user and host login details.
-   */
-  public readonly login: ShellLogin;
-
   /**
    * @description The print stream of React elements that the shell has output.
    */
@@ -83,9 +78,9 @@ export default class Shell
   private didExit: boolean;
 
   /**
-   * @description The exit code of the previous program.
+   * @description A dictionary mapping shell variable names to their values.
    */
-  public lastExitCode: number;
+  private vars: Record<string, ShellVarValue>;
 
   /**
    * @description The command parser utility.
@@ -109,8 +104,6 @@ export default class Shell
     onClear?: () => void
   ) {
     // Initialize the shell meta information, print stream, and optional event handlers.
-    this.name = name;
-    this.login = login;
     this.printStream = printStream;
     this.onExit = onExit;
     this.onClear = onClear;
@@ -121,14 +114,61 @@ export default class Shell
     // The shell starts in an active state, no exit has occurred.
     this.didExit = false;
 
-    // The last exit code starts as 0.
-    this.lastExitCode = 0;
+    // The variable initial values are set in the resetVars function.
+    this.vars = {};
 
     // Create a command parser that will be used for each command execution.
     this.parser = new CommandParser();
 
     // Register all the commands.
     this.commandSet.register(...COMMANDS);
+
+    // Initialize the default variable values.
+    this.resetVars(name, login);
+  }
+
+  /**
+   * @description Sets the default varaibles to their initial values.
+   */
+  private resetVars(name: string, login: ShellLogin): void
+  {
+    // Set initial values for all variables and override the entire object.
+    this.vars = {
+      "?": 0,
+      "SHELL": name,
+      "USER": login.user,
+      "HOST": login.host
+    }
+  }
+
+  public set(name: string, value: ShellVarValue): void
+  {
+    this.vars[name] = value;
+  }
+
+  public get(name: string): ShellVarValue
+  {
+    return this.vars[name];
+  }
+
+  public safeGet(name: string): number | string
+  {
+    const value = this.vars[name];
+
+    return value ? value : "";
+  }
+
+  public name(): string
+  {
+    return this.safeGet("SHELL").toString();
+  }
+
+  public login(): ShellLogin
+  {
+    return {
+      "user": this.safeGet("USER").toString(),
+      "host": this.safeGet("HOST").toString()
+    };
   }
 
   /**
@@ -207,10 +247,12 @@ export default class Shell
     {
       // If a syntax error occurs, print the error message. Otherwise, rethrow any other thrown object.
       if (err instanceof SyntaxError)
-        this.printStream.errorln(this.name + ": syntax error: " + err.message);
+        this.printStream.errorln(this.name() + ": syntax error: " + err.message);
       else
         throw err;
     }
+
+    console.log(tokens);
 
     // If the command was empty return immediately.
     if (tokens.length === 0)
@@ -219,6 +261,16 @@ export default class Shell
       return this;
     }
 
+    tokens = tokens.map(token => {
+
+      if (token.charAt(0) !== "$")
+        return token;
+
+      const varValue = this.vars[token.substring(1)];
+
+      return varValue ? varValue.toString() : "";
+    });
+
     // Split the tokens into the command (the first token) and the arguments (all subsequent tokens).
     const commandName = tokens[0];
     const commandArgs = tokens.slice(1, tokens.length);
@@ -226,16 +278,17 @@ export default class Shell
     // Try to execute the command.
     const exitCode = this.commandSet.exec(this, commandName, commandArgs);
 
-    // If the exit code is defined, the command exists in the set. Set the shells last exit code state to the exit code.
+    // If the exit code is defined, the command exists in the set. Set the shells last exit code variable to the exit
+    // code.
     if (exitCode !== undefined)
     {
-      this.lastExitCode = exitCode!;
+      this.set("?", exitCode!);
     }
     else
     {
       // If the returned exit code was undefined, this signifies that the command does not exist in the set. In this
       // case an error will be displayed to the print stream.
-      this.printStream.errorln(this.name + ": command not found: " + commandName);
+      this.printStream.errorln(this.name() + ": command not found: " + commandName);
     }
 
     // Return this object for convenience.
