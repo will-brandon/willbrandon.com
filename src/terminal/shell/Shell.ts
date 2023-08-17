@@ -83,6 +83,11 @@ export default class Shell
   private vars: Record<string, ShellVarValue>;
 
   /**
+   * @description A running history of all command executed during the session.
+   */
+  private history: string[];
+
+  /**
    * @description The command parser utility.
    */
   private readonly parser: CommandParser;
@@ -103,7 +108,7 @@ export default class Shell
     onExit?: (code: number) => void,
     onClear?: () => void
   ) {
-    // Initialize the shell meta information, print stream, and optional event handlers.
+    // Initialize the print stream and optional event handlers.
     this.printStream = printStream;
     this.onExit = onExit;
     this.onClear = onClear;
@@ -116,6 +121,9 @@ export default class Shell
 
     // The variable initial values are set in the resetVars function.
     this.vars = {};
+
+    // The history begins empty.
+    this.history = [];
 
     // Create a command parser that will be used for each command execution.
     this.parser = new CommandParser();
@@ -137,7 +145,8 @@ export default class Shell
       "?": 0,
       "SHELL": name,
       "USER": login.user,
-      "HOST": login.host
+      "HOST": login.host,
+      "HISTORY": ""
     }
   }
 
@@ -169,6 +178,11 @@ export default class Shell
       "user": this.safeGet("USER").toString(),
       "host": this.safeGet("HOST").toString()
     };
+  }
+
+  public getHistory(): string[]
+  {
+    return this.history;
   }
 
   /**
@@ -252,14 +266,15 @@ export default class Shell
         throw err;
     }
 
-    console.log(tokens);
-
     // If the command was empty return immediately.
     if (tokens.length === 0)
     {
       // Return this object for convenience.
       return this;
     }
+
+    // Add the command to the history.
+    this.history.push(command);
 
     tokens = tokens.map(token => {
 

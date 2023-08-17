@@ -24,6 +24,11 @@ interface PromptProps
   login: ShellLogin;
 
   /**
+   * @description An optional function that returns an array containing a history of previous command executed.
+   */
+  historyProvider?: () => string[];
+
+  /**
    * @description An optional function that is called each time the command input value changes.
    */
   onChange?: (value: string) => void;
@@ -93,8 +98,7 @@ const Prompt = (props: PromptProps): ReactElement => {
       if (event.key === "Enter")
       {
         // If the execution function exits, call it with the current input value.
-        if (props.onExec)
-        {
+        if (props.onExec) {
           props.onExec(currentInput.value);
         }
 

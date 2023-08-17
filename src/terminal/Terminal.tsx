@@ -101,6 +101,12 @@ const Terminal = (): ReactElement => {
   // Each time the feed updates scroll to the bottom of the viewport.
   useEffect(scrollToBottom, [feed]);
 
+  // The function loses its functionality if I don't wrap it for passing it along to the prompt.
+  function history(): string[]
+  {
+    return shell.getHistory();
+  }
+
   // Render the terminal prompt and the stream of React elements from the shell output. Include the command prompt if
   // the shell is active.
   return (
@@ -109,7 +115,9 @@ const Terminal = (): ReactElement => {
         <div className="feed">{feed}</div>
         {
           // If the shell is active display an interactive prompt.
-          shell.isActive() ? <Prompt login={shell.login()} onChange={scrollToBottom} onExec={exec} /> : ""
+          shell.isActive() ?
+            <Prompt login={shell.login()} historyProvider={history} onChange={scrollToBottom} onExec={exec} />
+            : ""
         }
       </div>
     </div>

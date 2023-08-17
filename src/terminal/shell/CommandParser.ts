@@ -24,6 +24,8 @@
  */
 type QuoteState = "" | "\"" | "'" | ".";
 
+/// NOTE: PROBLEM ON INPUT: 'echo "Shell name: " $SHELL';
+
 /**
  * @description Parses command strings into tokens. The parser is forward-looking meaning that it steps forward though
  *              each character in a linear format without ever looking backward at previously encountered characters.

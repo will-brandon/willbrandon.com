@@ -12,7 +12,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import {parseCommandTokens} from "./util/StringUtil";
 import CommandParser from "./terminal/shell/CommandParser";
 
 // Find the root HTML root div element and make it the React root element.
@@ -31,7 +30,7 @@ function show(str: string): void
     msg += "\"" + tokens[0] + "\"";
 
     tokens.slice(1).forEach(token => {
-      msg += ", " + "\"" + token + "\"";
+      msg += ", \"" + token + "\"";
     });
   }
 
