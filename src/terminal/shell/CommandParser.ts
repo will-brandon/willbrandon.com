@@ -62,18 +62,6 @@ interface ParserState
 }
 
 /**
- * @description Defines the initial parser state.
- */
-const INITIAL_STATE = {
-  tokens: [],
-  char: "\0",
-  workingTokenIndex: 0,
-  quoteState: "",
-  hangingEscape: false,
-  lastWasWhitespace: true
-} as ParserState;
-
-/**
  * @description Parses command strings into tokens. The parser is forward-looking meaning that it steps forward though
  *              each character in a linear format without ever looking backward at previously encountered characters.
  *              The parser works like a state machine that resets and starts fresh for each input string.
@@ -88,7 +76,7 @@ export default class CommandParser
   /**
    * @description When enabled the state object is displayed at the start of the parse and after each step.
    */
-  private debugLogStates: boolean;
+  private readonly debugLogStates: boolean;
 
   /**
    * @description Creates a new command parser.
@@ -98,11 +86,28 @@ export default class CommandParser
   public constructor(debugLogStates = false)
   {
     // Each time the parser begins parsing the state is reset. The state values are initialized in the constructor
-    // simply for type compliance so that they do not have to be optional types.
-    this.state = INITIAL_STATE;
+    // simply for type compliance.
+    this.state = this.makeInitialState();
 
     // Set the debug option.
     this.debugLogStates = debugLogStates;
+  }
+
+  /**
+   * @description Creates a new instance of an initial parser state.
+   *
+   * @return  the state
+   */
+  private makeInitialState(): ParserState
+  {
+    return {
+      tokens: [],
+      char: "\0",
+      workingTokenIndex: 0,
+      quoteState: "",
+      hangingEscape: false,
+      lastWasWhitespace: true
+    }
   }
 
   /**
@@ -110,8 +115,8 @@ export default class CommandParser
    */
   private reset(): void
   {
-    // Set each state variable to it's initial value (stored in initial state constant).
-    this.state = INITIAL_STATE;
+    // Set each state variable to it's initial value.
+    this.state = this.makeInitialState();
   }
 
   /**
@@ -168,7 +173,7 @@ export default class CommandParser
    */
   private push(empty: boolean = false): boolean
   {
-    // If the token already exists and is not empty append the current character.
+    // If the token already exists and is not empty append the current character or an empty string.
     if (this.state.tokens[this.state.workingTokenIndex])
     {
       this.state.tokens[this.state.workingTokenIndex] += empty ? "" : this.state.char;
@@ -176,7 +181,7 @@ export default class CommandParser
     else
     {
       // If the token does not exist in the array or is an empty string, set the current working token to the current
-      // character or an empty string
+      // character or an empty string.
       this.state.tokens[this.state.workingTokenIndex] = empty ? "" : this.state.char;
     }
 
