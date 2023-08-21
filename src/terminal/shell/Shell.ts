@@ -17,6 +17,7 @@ import ElementPrintStream from "../../util/stream/ElementPrintStream";
 import EchoCommand from "./command/EchoCommand";
 import CommandParser from "./CommandParser";
 import ManualCommand from "./command/ManualCommand";
+import ColorsCommand from "./command/ColorsCommand";
 
 /**
  * @description Contains an instance of each command that is recognized by the shell.
@@ -24,6 +25,7 @@ import ManualCommand from "./command/ManualCommand";
 const COMMANDS: ShellCommand[] = [
   new ExitCommand(),
   new ManualCommand(),
+  new ColorsCommand(),
   new EchoCommand(),
   new ClearCommand(),
   new ResumeCommand(),

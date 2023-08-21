@@ -10,7 +10,7 @@
 
 import React, {ReactElement} from 'react';
 import {v4 as uuid} from 'uuid';
-import ElementStream from "./ElementStream";
+import ElementStream, {ColorClass} from "./ElementStream";
 
 /**
  * @description Represents a buffered print stream that yields React elements.
@@ -66,9 +66,9 @@ export default class ElementPrintStream extends ElementStream
 
   public print(
     str: string = "",
+    colorClass: ColorClass = ColorClass.DEFAULT,
     paddingSize: number = 0,
-    paddingChar: string = " ",
-    className?: string
+    paddingChar: string = " "
   ): ElementPrintStream
   {
     // Split the string into multiple lines.
@@ -82,9 +82,9 @@ export default class ElementPrintStream extends ElementStream
     // Add each line to the stream and delimiter them with line breaks,
     for (let i = 0; i < lines.length; i++)
     {
-      if (className)
+      if (colorClass !== ColorClass.DEFAULT)
       {
-        this.append(<pre className={className}>{lines[i]}</pre>);
+        this.append(<pre className={colorClass}>{lines[i]}</pre>);
       }
       else
       {
@@ -110,10 +110,15 @@ export default class ElementPrintStream extends ElementStream
    *
    * @return  the element stream object for convenience
    */
-  public println(str: string = "", paddingSize: number = 0, paddingChar: string = " ", className?: string): ElementPrintStream
+  public println(
+    str: string = "",
+    colorClass: ColorClass = ColorClass.DEFAULT,
+    paddingSize: number = 0,
+    paddingChar: string = " "
+  ): ElementPrintStream
   {
     // Add a newline character after the string.
-    this.print(str + "\n", paddingSize, paddingChar, className);
+    this.print(str + "\n", colorClass, paddingSize, paddingChar);
 
     // Return this object for convenience.
     return this;
@@ -130,7 +135,7 @@ export default class ElementPrintStream extends ElementStream
   public error(str?: string, paddingSize: number = 0, paddingChar: string = " "): ElementPrintStream
   {
     // Print the message in an "error-line" HTML class pre element.
-    this.print(str, paddingSize, paddingChar, "error");
+    this.print(str, ColorClass.RED, paddingSize, paddingChar);
 
     // Return this object for convenience.
     return this;
@@ -147,7 +152,7 @@ export default class ElementPrintStream extends ElementStream
   public errorln(str?: string, paddingSize: number = 0, paddingChar: string = " "): ElementPrintStream
   {
     // Print the message in an "error-line" HTML class pre element.
-    this.println(str, paddingSize, paddingChar, "error");
+    this.println(str, ColorClass.RED, paddingSize, paddingChar);
 
     // Return this object for convenience.
     return this;

@@ -12,6 +12,20 @@ import React, {ReactElement} from 'react';
 import {v4 as uuid} from 'uuid';
 
 /**
+ * @description Represents the possible color CSS classes for text.
+ */
+export enum ColorClass
+{
+  DEFAULT = 0,
+  RED = 1,
+  GREEN = 2,
+  BLUE = 3,
+  LIGHT_BLUE = 4,
+  VIOLET = 5,
+  AQUA = 6
+}
+
+/**
  * @description Represents an unbuffered stream of React elements.
  */
 export default class ElementStream

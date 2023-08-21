@@ -48,16 +48,6 @@ div.terminal div.feed div.stream-item pre.line
   color: #d9d6d4;
 }
 
-div.terminal div.feed div.stream-item pre.line pre.error
-{
-  display: inline-block;
-  padding: 0;
-  margin: 0;
-  font-family: 'Roboto Mono', sans-serif;
-  font-size: 18px;
-  color: #D63434;
-}
-
 div.terminal div.feed div.stream-item pre.line a
 {
   display: inline-block;
@@ -66,4 +56,18 @@ div.terminal div.feed div.stream-item pre.line a
   font-family: 'Roboto Mono', sans-serif;
   font-size: 18px;
   color: #86cfff;
+}
+
+div.terminal div.feed div.stream-item pre.line pre
+{
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto Mono', sans-serif;
+  font-size: 18px;
+}
+
+div.terminal div.feed div.stream-item pre.line pre.red
+{
+  color: #D63434;
 }

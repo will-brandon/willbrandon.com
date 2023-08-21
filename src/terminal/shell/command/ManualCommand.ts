@@ -10,6 +10,7 @@
 
 import Shell from "../Shell";
 import ShellCommand from "./ShellCommand";
+import {ColorClass} from "../../../util/stream/ElementStream";
 
 export default class ManualCommand extends ShellCommand
 {
@@ -36,7 +37,7 @@ export default class ManualCommand extends ShellCommand
 
     commandSet.commands.forEach(command => {
       printStream.print("  ");
-      printStream.print(command.usage, 20);
+      printStream.print(command.usage, ColorClass.DEFAULT, 20);
       printStream.println(command.description);
     });
 
