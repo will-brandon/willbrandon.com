@@ -19,22 +19,16 @@ class NavigationCommands extends ShellCommand
 
   public constructor(name: string, url: string, usage?: string, description?: string)
   {
-    super(name, usage, description);
+    super(name, usage, description, 0, 1);
 
     this.url = url;
   }
 
-  public override exec(shell: Shell, args: string[]): number
+  protected override main(shell: Shell, args: string[]): number
   {
     const printStream = shell.printStream;
 
     let newTab = true;
-
-    if (args.length > 1)
-    {
-      printStream.errorln("Only one argument is allowed. Usage: " + this.usage);
-      return 1;
-    }
 
     if (args.length === 1)
     {

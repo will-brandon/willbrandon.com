@@ -14,20 +14,14 @@ export default class ExitCommand extends ShellCommand
 {
   public constructor()
   {
-    super("exit", "exit [code]", "Exits the shell session.");
+    super("exit", "exit [code]", "Exits the shell session.", 0, 1);
   }
 
-  public override exec(shell: Shell, args: string[]): number
+  protected override main(shell: Shell, args: string[]): number
   {
     const printStream = shell.printStream;
 
     let code = 0;
-
-    if (args.length > 1)
-    {
-      printStream.errorln("Only one argument is accepted. Usage: " + this.usage);
-      return 1;
-    }
 
     if (args.length === 1)
     {

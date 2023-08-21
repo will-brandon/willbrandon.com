@@ -12,43 +12,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import CommandParser from "./terminal/shell/CommandParser";
 
 // Find the root HTML root div element and make it the React root element.
 const htmlRootElement = document.getElementById('root') as HTMLDivElement
 const reactRootElement = ReactDOM.createRoot(htmlRootElement);
-
-const parser = new CommandParser(true);
-
-function show(str: string): void
-{let msg = "\"" + str + "\"  -->  [";
-
-  const tokens = parser.parse(str);
-
-  if (tokens.length > 0)
-  {
-    msg += "\"" + tokens[0] + "\"";
-
-    tokens.slice(1).forEach(token => {
-      msg += ", \"" + token + "\"";
-    });
-  }
-
-  msg += "]";
-
-  console.log(msg);
-}
-
-//show("\\\\");
-//show("");
-//show("ab \\\\    cd hello");
-//show(" \"This 'is\" a test!!!\t!");
-//show("  'hello '  e ' wo \"\" '  \" ''     I \" TEST \" \" this.");
-//show("   yup, that \" SHOULD' \" DO it");
-//show("    \\\\\\\"\\\" '\\'\\''");
-//show(" '' '' ");
-//show("this is a test");
-show("\"A \" B");
 
 // Render the app in the React root element.
 reactRootElement.render(

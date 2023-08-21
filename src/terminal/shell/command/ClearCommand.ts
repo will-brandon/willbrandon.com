@@ -14,17 +14,11 @@ export default class ClearCommand extends ShellCommand
 {
   public constructor()
   {
-    super("clear", "clear", "Clears the terminal window.");
+    super("clear", "clear", "Clears the terminal window.", 0, 0);
   }
 
-  public override exec(shell: Shell, args: string[]): number
+  protected override main(shell: Shell, args: string[]): number
   {
-    if (args.length > 0)
-    {
-      shell.printStream.errorln("No arguments are accepted.");
-      return 1;
-    }
-
     shell.clear();
     return 0;
   }

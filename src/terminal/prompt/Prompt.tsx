@@ -8,7 +8,7 @@
  * @description Defines the functional component for a Linux terminal prompt.
  */
 
-import {ReactElement, useEffect, useRef} from 'react';
+import {ReactElement, useEffect, useRef, useState} from 'react';
 import './Prompt.css';
 import PromptMessage from "./PromptMessage";
 import {ShellLogin} from "../shell/Shell";
@@ -57,6 +57,22 @@ const Prompt = (props: PromptProps): ReactElement => {
   // Create a reference to the input element.
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [workingHistory, setWorkingHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState<number>(0);
+
+  useEffect(() => {
+
+    function updateWorkingHistory(): void
+    {
+      const newHistory = props.historyProvider ? [...props.historyProvider!(), ""] : [""];
+      setWorkingHistory(newHistory);
+      setHistoryIndex(newHistory.length - 1);
+    }
+
+    updateWorkingHistory();
+
+  }, [props]);
+
   // Implement functionality to handle when the component mounts (defined in function body) and the UI unmounts (defined
   // in returned function body).
   useEffect((): (() => void) => {
@@ -94,17 +110,37 @@ const Prompt = (props: PromptProps): ReactElement => {
      */
     function onInputKeyDown(event: KeyboardEvent): void
     {
-      // If the enter key is pressed execute the current command.
-      if (event.key === "Enter")
-      {
-        // If the execution function exits, call it with the current input value.
-        if (props.onExec) {
-          props.onExec(currentInput.value);
-        }
+      let newHistoryIndex = 0;
 
-        // Clear the input value and resize it appropriately.
-        currentInput.value = "";
-        fitInputToText();
+      // Perform the appropriate action based on the key pressed.
+      switch (event.key)
+      {
+        // If the enter key is pressed execute the current command.
+        case "Enter":
+          // If the execution function exits, call it with the current input value.
+          if (props.onExec) {
+            props.onExec(currentInput.value);
+          }
+
+          // Clear the input value and resize it appropriately.
+          currentInput.value = "";
+          fitInputToText();
+          break;
+
+        case "ArrowUp":
+          newHistoryIndex = Math.max(0, historyIndex - 1);
+          setHistoryIndex(newHistoryIndex);
+
+          currentInput.value = workingHistory[newHistoryIndex];
+          fitInputToText();
+          break;
+
+        case "ArrowDown":
+          newHistoryIndex = Math.min(workingHistory.length - 1, historyIndex + 1);
+          setHistoryIndex(newHistoryIndex);
+
+          currentInput.value = workingHistory[newHistoryIndex];
+          fitInputToText();
       }
     }
 
@@ -158,7 +194,7 @@ const Prompt = (props: PromptProps): ReactElement => {
     // Return the event listener cleanup function so that it gets called when the component unmounts.
     return deinitInputEventListeners;
 
-  }, [props]);
+  }, [props, workingHistory, historyIndex]);
 
   // Render the terminal prompt message and input. Ensure the input element has no automatic correction or
   // capitalization and no spell check.

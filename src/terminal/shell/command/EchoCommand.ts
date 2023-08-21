@@ -18,10 +18,9 @@ export default class EchoCommand extends ShellCommand
     super("echo", "echo [strings...]", "Prints a list of strings to the console.");
   }
 
-  public override exec(shell: Shell, args: string[]): number
+  protected override main(shell: Shell, args: string[]): number
   {
     shell.printStream.println(args.join(" "));
-
     return 0;
   }
 }
