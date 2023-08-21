@@ -12,11 +12,20 @@ import Shell from "./Shell";
 
 export default class CommandSet
 {
-  private readonly commands: ShellCommand[];
+  public readonly commands: ShellCommand[];
 
-  public constructor()
+  public constructor(commands: ShellCommand[] = [])
   {
+    // Initialize the command array empty.
     this.commands = [];
+
+    // Register the commands via the register function to ensure there are no duplicated command names.
+    this.register(...commands);
+  }
+
+  public size(): number
+  {
+    return this.commands.length;
   }
 
   public find(name: string): ShellCommand | undefined
@@ -24,15 +33,34 @@ export default class CommandSet
     return this.commands.find(command => command.name === name);
   }
 
-  public register(...commands: ShellCommand[]): void
+  public subset(names: string[]): [CommandSet, string[]]
+  {
+    const subset = new CommandSet();
+    const missing = [] as string[];
+
+    names.forEach(name => {
+      const command = this.find(name);
+
+      if (command)
+        subset.register(command);
+      else
+        missing.push(name);
+    });
+
+    return [subset, missing];
+  }
+
+  public register(...commands: ShellCommand[]): boolean
   {
     commands.forEach(command => {
       if (this.find(command.name)) {
-        throw TypeError("Cannot register a command with a name that's already in the set registry.");
+        return false;
       }
 
       this.commands.push(command);
     });
+
+    return true;
   }
 
   public exec(shell: Shell, name: string, args: string[]): number | undefined

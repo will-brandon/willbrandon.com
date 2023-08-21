@@ -16,12 +16,14 @@ import {GitHubCommand, LinkedInCommand, ResumeCommand} from "./command/Navigatio
 import ElementPrintStream from "../../util/stream/ElementPrintStream";
 import EchoCommand from "./command/EchoCommand";
 import CommandParser from "./CommandParser";
+import ManualCommand from "./command/ManualCommand";
 
 /**
  * @description Contains an instance of each command that is recognized by the shell.
  */
 const COMMANDS: ShellCommand[] = [
   new ExitCommand(),
+  new ManualCommand(),
   new EchoCommand(),
   new ClearCommand(),
   new ResumeCommand(),
@@ -70,7 +72,7 @@ export default class Shell
   /**
    * @description A set of all commands that are recognized by the shell.
    */
-  private readonly commandSet: CommandSet;
+  public readonly commandSet: CommandSet;
 
   /**
    * @description Determines whether the shell has exited.
@@ -85,7 +87,7 @@ export default class Shell
   /**
    * @description A running history of all command executed during the session.
    */
-  private history: string[];
+  private readonly history: string[];
 
   /**
    * @description The command parser utility.

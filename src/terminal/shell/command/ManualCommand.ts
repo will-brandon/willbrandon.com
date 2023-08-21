@@ -11,23 +11,42 @@
 import Shell from "../Shell";
 import ShellCommand from "./ShellCommand";
 
-class ManualCommand extends ShellCommand
+export default class ManualCommand extends ShellCommand
 {
   public constructor()
   {
-    super("man", "man [command]",
-      "Displays information about all commands or a specific given command.");
+    super("man", "man [commands...]",
+      "Displays information about all commands or a specific given list of commands.");
   }
 
   protected override main(shell: Shell, args: string[]): number
   {
     const printStream = shell.printStream;
 
-    if (args.length === 1)
-    {
+    let commandSet = shell.commandSet;
+    let missing = [] as string[];
 
+    if (args.length > 0)
+    {
+      [commandSet, missing] = shell.commandSet.subset(args);
     }
 
+    if (commandSet.size() > 0)
+      printStream.println();
+
+    commandSet.commands.forEach(command => {
+      printStream.print("  ");
+      printStream.print(command.usage, 20);
+      printStream.println(command.description);
+    });
+
+    printStream.println();
+
+    if (missing.length > 0)
+    {
+      printStream.errorln("  No manual entry for command(s): '" + missing.join("', '") + "'");
+      printStream.println();
+    }
 
     return 0;
   }

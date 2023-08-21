@@ -64,10 +64,20 @@ export default class ElementPrintStream extends ElementStream
     return this;
   }
 
-  public print(str: string = "", className?: string): ElementPrintStream
+  public print(
+    str: string = "",
+    paddingSize: number = 0,
+    paddingChar: string = " ",
+    className?: string
+  ): ElementPrintStream
   {
     // Split the string into multiple lines.
     const lines = str.split("\n");
+
+    for (let i = lines[0].length; i <= paddingSize; i++)
+    {
+      lines[0] += paddingChar;
+    }
 
     // Add each line to the stream and delimiter them with line breaks,
     for (let i = 0; i < lines.length; i++)
@@ -100,11 +110,10 @@ export default class ElementPrintStream extends ElementStream
    *
    * @return  the element stream object for convenience
    */
-  public println(str: string = "", className?: string): ElementPrintStream
+  public println(str: string = "", paddingSize: number = 0, paddingChar: string = " ", className?: string): ElementPrintStream
   {
-
     // Add a newline character after the string.
-    this.print(str + "\n", className);
+    this.print(str + "\n", paddingSize, paddingChar, className);
 
     // Return this object for convenience.
     return this;
@@ -118,10 +127,10 @@ export default class ElementPrintStream extends ElementStream
    *
    * @return  the element stream object for convenience
    */
-  public error(str?: string): ElementPrintStream
+  public error(str?: string, paddingSize: number = 0, paddingChar: string = " "): ElementPrintStream
   {
     // Print the message in an "error-line" HTML class pre element.
-    this.print(str, "error");
+    this.print(str, paddingSize, paddingChar, "error");
 
     // Return this object for convenience.
     return this;
@@ -135,10 +144,10 @@ export default class ElementPrintStream extends ElementStream
    *
    * @return  the element stream object for convenience
    */
-  public errorln(str?: string): ElementPrintStream
+  public errorln(str?: string, paddingSize: number = 0, paddingChar: string = " "): ElementPrintStream
   {
     // Print the message in an "error-line" HTML class pre element.
-    this.println(str, "error");
+    this.println(str, paddingSize, paddingChar, "error");
 
     // Return this object for convenience.
     return this;
