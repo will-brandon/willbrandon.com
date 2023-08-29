@@ -18,12 +18,14 @@ import EchoCommand from "./command/EchoCommand";
 import CommandParser from "./CommandParser";
 import ManualCommand from "./command/ManualCommand";
 import ColorsCommand from "./command/ColorsCommand";
+import DeclareCommand from "./command/DeclareCommand";
 
 /**
  * @description Contains an instance of each command that is recognized by the shell.
  */
 const COMMANDS: ShellCommand[] = [
   new ExitCommand(),
+  new DeclareCommand(),
   new ManualCommand(),
   new ColorsCommand(),
   new EchoCommand(),
@@ -84,7 +86,7 @@ export default class Shell
   /**
    * @description A dictionary mapping shell variable names to their values.
    */
-  private vars: Record<string, ShellVarValue>;
+  public vars: Record<string, ShellVarValue>;
 
   /**
    * @description A running history of all command executed during the session.
@@ -149,19 +151,8 @@ export default class Shell
       "?": 0,
       "SHELL": name,
       "USER": login.user,
-      "HOST": login.host,
-      "HISTORY": ""
+      "HOST": login.host
     }
-  }
-
-  public set(name: string, value: ShellVarValue): void
-  {
-    this.vars[name] = value;
-  }
-
-  public get(name: string): ShellVarValue
-  {
-    return this.vars[name];
   }
 
   public safeGet(name: string): number | string
@@ -287,7 +278,7 @@ export default class Shell
 
       const varValue = this.vars[token.substring(1)];
 
-      return varValue ? varValue.toString() : "";
+      return varValue !== undefined ? varValue.toString() : "";
     });
 
     // Split the tokens into the command (the first token) and the arguments (all subsequent tokens).
@@ -301,7 +292,7 @@ export default class Shell
     // code.
     if (exitCode !== undefined)
     {
-      this.set("?", exitCode!);
+      this.vars["?"] = exitCode!;
     }
     else
     {

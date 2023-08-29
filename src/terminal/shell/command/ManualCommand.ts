@@ -1,5 +1,5 @@
 /**
- * @file  ManualCommandts
+ * @file  ManualCommand.ts
  *
  * @filetype  Typescript
  * @author    Will Brandon
@@ -16,7 +16,7 @@ export default class ManualCommand extends ShellCommand
 {
   public constructor()
   {
-    super("man", "man [commands...]",
+    super("man", "man [-v] [commands...]",
       "Displays information about all commands or a specific given list of commands.");
   }
 
