@@ -10,19 +10,37 @@
 
 import React, {ReactElement} from 'react';
 import {v4 as uuid} from 'uuid';
+import {ALL} from "dns";
 
 /**
  * @description Represents the possible color CSS classes for text.
  */
-export enum ColorClass
+export class StreamColor
 {
-  DEFAULT = 0,
-  RED = 1,
-  GREEN = 2,
-  BLUE = 3,
-  LIGHT_BLUE = 4,
-  VIOLET = 5,
-  AQUA = 6
+  public static readonly DEFAULT = new StreamColor();
+  public static readonly RED = new StreamColor("red");
+  public static readonly GREEN = new StreamColor("green");
+  public static readonly BLUE = new StreamColor("blue");
+  public static readonly LIGHT_BLUE = new StreamColor("light-blue");
+  public static readonly VIOLET = new StreamColor("violet");
+  public static readonly AQUA = new StreamColor("aqua");
+
+  public static readonly ALL_COLORS = [
+    StreamColor.DEFAULT, StreamColor.RED, StreamColor.GREEN, StreamColor.BLUE,
+    StreamColor.LIGHT_BLUE, StreamColor.VIOLET, StreamColor.AQUA
+  ];
+
+  public readonly className: string;
+
+  private constructor(className?: string)
+  {
+    this.className = className ? className : "default";
+  }
+
+  public isDefault(): boolean
+  {
+    return this.className === "default";
+  }
 }
 
 /**

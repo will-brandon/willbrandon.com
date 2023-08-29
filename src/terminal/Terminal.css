@@ -71,3 +71,28 @@ div.terminal div.feed div.stream-item pre.line pre.red
 {
   color: #D63434;
 }
+
+div.terminal div.feed div.stream-item pre.line pre.green
+{
+  color: #6bb68f;
+}
+
+div.terminal div.feed div.stream-item pre.line pre.blue
+{
+  color: #67beff;
+}
+
+div.terminal div.feed div.stream-item pre.line pre.light-blue
+{
+  color: #86cfff;
+}
+
+div.terminal div.feed div.stream-item pre.line pre.violet
+{
+  color: #ca7ae5;
+}
+
+div.terminal div.feed div.stream-item pre.line pre.aqua
+{
+  color: #34d6b6;
+}

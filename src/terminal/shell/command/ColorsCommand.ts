@@ -10,7 +10,7 @@
 
 import Shell from "../Shell";
 import ShellCommand from "./ShellCommand";
-import {ColorClass} from "../../../util/stream/ElementStream";
+import {StreamColor} from "../../../util/stream/ElementStream";
 
 export default class ColorsCommand extends ShellCommand
 {
@@ -26,10 +26,8 @@ export default class ColorsCommand extends ShellCommand
 
     printStream.println();
 
-    let i = 0;
-    Object.keys(ColorClass).forEach(colorClass => {
-      printStream.println(colorClass, ColorClass.);
-      i++;
+    StreamColor.ALL_COLORS.forEach(color => {
+      printStream.println("  " + color.className, color);
     });
 
     printStream.println();
