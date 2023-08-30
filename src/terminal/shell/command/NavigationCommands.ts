@@ -54,7 +54,8 @@ export class ResumeCommand extends NavigationCommands
 {
   public constructor()
   {
-    super("resume", myInfoJSON.resume_url, "resume [-n | -s]", "Opens my resume.");
+    super("resume", myInfoJSON.resume_url, "resume [-n | -s]", "Opens my resume in a new tab (-n) or the same tab" +
+      " (-s).");
   }
 }
 
@@ -62,7 +63,8 @@ export class LinkedInCommand extends NavigationCommands
 {
   public constructor()
   {
-    super("linkedin", myInfoJSON.linkedin_url, "linkedin [-n | -s]", "Opens my LinkedIn profile.");
+    super("linkedin", myInfoJSON.linkedin_url, "linkedin [-n | -s]", "Opens my LinkedIn profile in a new tab (-n) or" +
+      " the same tag (-s).");
   }
 }
 
@@ -70,6 +72,8 @@ export class GitHubCommand extends NavigationCommands
 {
   public constructor()
   {
-    super("github", myInfoJSON.github_url, "github [-n | -s]", "Opens my GitHub profile.");
+    super("github", myInfoJSON.github_url, "github [-n | -s]", "Opens my GitHub profile in a new tab (-n) or" +
+      " the" +
+      " same tag (-s).");
   }
 }

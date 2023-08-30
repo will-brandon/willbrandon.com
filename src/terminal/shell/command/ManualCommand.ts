@@ -16,7 +16,7 @@ export default class ManualCommand extends ShellCommand
 {
   public constructor()
   {
-    super("man", "man [-v] [commands...]",
+    super("man", "man [commands...]",
       "Displays information about all commands or a specific given list of commands.");
   }
 

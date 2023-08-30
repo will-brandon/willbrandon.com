@@ -20,6 +20,7 @@ import ManualCommand from "./command/ManualCommand";
 import ColorsCommand from "./command/ColorsCommand";
 import DeclareCommand from "./command/DeclareCommand";
 import UnsetCommand from "./command/UnsetCommand";
+import AboutCommand from "./command/AboutCommand";
 
 /**
  * @description Contains an instance of each command that is recognized by the shell.
@@ -32,6 +33,7 @@ const COMMANDS: ShellCommand[] = [
   new ColorsCommand(),
   new EchoCommand(),
   new ClearCommand(),
+  new AboutCommand(),
   new ResumeCommand(),
   new LinkedInCommand(),
   new GitHubCommand()
