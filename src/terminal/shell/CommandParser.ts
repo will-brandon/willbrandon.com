@@ -176,22 +176,20 @@ export default class CommandParser
    *              empty value can be pumped into the token as well which does nothing if the current token already has a
    *              value, but it initializes the token to an empty string if it does not already exist.
    *
-   * @param empty whether an empty string should be pushed instead of the current character
-   *
    * @return  false under all circumstances so that this function can be used as a bypass in 'or' short-circuit chaining
    */
-  private push(quoteWrapped: boolean = false, empty: boolean = false): boolean
+  private push(quoteWrapped: boolean = false, specific?: string): boolean
   {
     // If the token already exists and is not empty append the current character or an empty string.
     if (this.state.tokens[this.state.workingTokenIndex])
     {
-      this.state.tokens[this.state.workingTokenIndex] += empty ? "" : this.state.char;
+      this.state.tokens[this.state.workingTokenIndex] += specific !== undefined ? specific : this.state.char;
     }
     else
     {
       // If the token does not exist in the array or is an empty string, set the current working token to the current
       // character or an empty string.
-      this.state.tokens[this.state.workingTokenIndex] = empty ? "" : this.state.char;
+      this.state.tokens[this.state.workingTokenIndex] = specific !== undefined ? specific : this.state.char;
     }
 
     if (this.state.quoteWraps[this.state.workingTokenIndex] === undefined)
@@ -266,7 +264,7 @@ export default class CommandParser
       return true;
     }
 
-    throw SyntaxError("Only a quotation mark or backslash can be escaped by a backslash in a command.");
+    throw SyntaxError("Invalid escaped symbol: '" + this.state.char + "'.");
   }
 
   private stepQuote(): boolean
@@ -285,7 +283,7 @@ export default class CommandParser
         break;
 
       case this.state.char:
-        this.push(true, true);
+        this.push(true, "");
         this.state.quoteState = ".";
         break;
 

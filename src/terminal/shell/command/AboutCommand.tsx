@@ -25,11 +25,17 @@ export default class AboutCommand extends ShellCommand
 
     printStream.println();
 
-    printStream.pushSplit(30,
-      <img src="/resources/will.jpg" className="large" />,
-      <React.Fragment>
-        <pre className="line"><pre className="light-blue">Will Brandon</pre></pre>
-      </React.Fragment>
+    printStream.pushSplit(30, (
+        <img src="/resources/will.jpg" className="large" />
+      ), (
+        <React.Fragment>
+          <pre className="line">👋 Hi! I'm <pre className="light-blue">Will Brandon</pre>.</pre>
+          <pre className="line">I am studying Computer Science at Northeastern</pre>
+          <pre className="line">University</pre>
+          <br />
+          <pre className="line"></pre>
+        </React.Fragment>
+      )
     );
 
     printStream.println();

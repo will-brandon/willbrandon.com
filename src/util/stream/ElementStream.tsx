@@ -84,7 +84,8 @@ export default class ElementStream
     const spacerStyles = {display: "inline-block", width: spacing, fontSize: 0};
 
     const spacedPanes = elements.map((element, index) => (
-      <React.Fragment>
+      // Each fragment must have a unique key so that they can be distinguished within the final pushed fragment below.
+      <React.Fragment key={uuid()}>
         <div key={uuid()} className="pane">{element}</div>
         {
           spacing > 0 && index < elements.length - 1 ?

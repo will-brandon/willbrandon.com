@@ -260,9 +260,14 @@ export default class Shell
     {
       // If a syntax error occurs, print the error message. Otherwise, rethrow any other thrown object.
       if (err instanceof SyntaxError)
+      {
         this.printStream.errorln(this.name() + ": syntax error: " + err.message);
+        return this;
+      }
       else
+      {
         throw err;
+      }
     }
 
     // If the command was empty return immediately.
