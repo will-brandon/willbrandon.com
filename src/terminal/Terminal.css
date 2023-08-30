@@ -16,6 +16,7 @@ div.terminal-viewport
   display: block;
   height: 100%;
   overflow: scroll;
+  font-size: 0px;
 }
 
 div.terminal
@@ -26,16 +27,26 @@ div.terminal
   padding: 20px;
   overflow: scroll;
   background-color: #212121;
+  font-size: 0px;
 }
 
 div.terminal div.feed
 {
   display: block;
+  font-size: 0px;
 }
 
 div.terminal div.feed div.stream-item
 {
   display: block;
+  font-size: 0px;
+}
+
+div.terminal div.feed div.stream-item div.pane
+{
+  display: inline-block;
+  vertical-align: top;
+  font-size: 0px;
 }
 
 div.terminal div.feed div.stream-item pre.line
@@ -95,4 +106,12 @@ div.terminal div.feed div.stream-item pre.line pre.violet
 div.terminal div.feed div.stream-item pre.line pre.aqua
 {
   color: #34d6b6;
+}
+
+div.terminal div.feed div.stream-item img.large
+{
+  display: inline-block;
+  width: 200px;
+  padding: 0px;
+  margin: 0px;
 }

@@ -10,6 +10,7 @@
 
 import Shell from "../Shell";
 import ShellCommand from "./ShellCommand";
+import React from "react";
 
 export default class AboutCommand extends ShellCommand
 {
@@ -20,7 +21,19 @@ export default class AboutCommand extends ShellCommand
 
   protected override main(shell: Shell, args: string[]): number
   {
-    shell.printStream.println(args.join(" "));
+    const printStream = shell.printStream;
+
+    printStream.println();
+
+    printStream.pushSplit(30,
+      <img src="/resources/will.jpg" className="large" />,
+      <React.Fragment>
+        <pre className="line"><pre className="light-blue">Will Brandon</pre></pre>
+      </React.Fragment>
+    );
+
+    printStream.println();
+
     return 0;
   }
 }

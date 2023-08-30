@@ -10,7 +10,6 @@
 
 import React, {ReactElement} from 'react';
 import {v4 as uuid} from 'uuid';
-import {ALL} from "dns";
 
 /**
  * @description Represents the possible color CSS classes for text.
@@ -73,29 +72,28 @@ export default class ElementStream
    */
   public push(element: ReactElement): ElementStream
   {
-    // Wrap the element in a div with a React render-identifier key.
-    const identifiableElement = (
-      <div key={uuid()} className="stream-item">{element}</div>
-    );
-
-    // Pass the identifiable element to the receiver.
-    this.receiver(identifiableElement);
+    // Pass an identifiable element to the receiver.
+    this.receiver(<div key={uuid()} className="stream-item">{element}</div>);
     
     // Return this object for convenience.
     return this;
   }
 
-  /**
-   * @description Pushes a new line composed of only a string into the stream.
-   *
-   * @param str the string to be put into a line
-   *
-   * @return  the element stream object for convenience
-   */
-  public pushStr(str: string): ElementStream
+  public pushSplit(spacing: number, ...elements: ReactElement[]): ElementStream
   {
-    // Push the string as a fragment i.e. it is place raw inside the line div.
-    this.push(<React.Fragment>{str}</React.Fragment>);
+    const spacerStyles = {display: "inline-block", width: spacing, fontSize: 0};
+
+    const spacedPanes = elements.map((element, index) => (
+      <React.Fragment>
+        <div key={uuid()} className="pane">{element}</div>
+        {
+          spacing > 0 && index < elements.length - 1 ?
+            <div key={uuid()} className="spacer" style={spacerStyles}></div> : ""
+        }
+      </React.Fragment>
+    ));
+
+    this.push(<React.Fragment>{spacedPanes}</React.Fragment>);
 
     // Return this object for convenience.
     return this;
