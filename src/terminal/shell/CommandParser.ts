@@ -34,6 +34,8 @@ interface ParserState
    */
   tokens: string[];
 
+  quoteWraps: boolean[];
+
   /**
    * @description The current character being analyzed. It is encoded as a string because Typescript doesn't have a
    *              character type however its length should always be 1 when the parser steps.
@@ -59,6 +61,12 @@ interface ParserState
    * @description Indicates whether the last character processed was whitespace.
    */
   lastWasWhitespace: boolean;
+}
+
+export interface ParserResult
+{
+  tokens: string[];
+  quoteWraps: boolean[];
 }
 
 /**
@@ -102,6 +110,7 @@ export default class CommandParser
   {
     return {
       tokens: [],
+      quoteWraps: [],
       char: "\0",
       workingTokenIndex: 0,
       quoteState: "",
@@ -171,7 +180,7 @@ export default class CommandParser
    *
    * @return  false under all circumstances so that this function can be used as a bypass in 'or' short-circuit chaining
    */
-  private push(empty: boolean = false): boolean
+  private push(quoteWrapped: boolean = false, empty: boolean = false): boolean
   {
     // If the token already exists and is not empty append the current character or an empty string.
     if (this.state.tokens[this.state.workingTokenIndex])
@@ -183,6 +192,16 @@ export default class CommandParser
       // If the token does not exist in the array or is an empty string, set the current working token to the current
       // character or an empty string.
       this.state.tokens[this.state.workingTokenIndex] = empty ? "" : this.state.char;
+    }
+
+    if (this.state.quoteWraps[this.state.workingTokenIndex] === undefined)
+    {
+      this.state.quoteWraps[this.state.workingTokenIndex] = false;
+    }
+
+    if (quoteWrapped)
+    {
+      this.state.quoteWraps[this.state.workingTokenIndex] = true;
     }
 
     // Return false to function as an 'or' short-circuiting bypass.
@@ -266,7 +285,7 @@ export default class CommandParser
         break;
 
       case this.state.char:
-        this.push(true);
+        this.push(true, true);
         this.state.quoteState = ".";
         break;
 
@@ -333,7 +352,7 @@ export default class CommandParser
    *
    * @throws SyntaxError  if there is a syntax error in the command while parsing.
    */
-  public parse(command: string): string[]
+  public parse(command: string): ParserResult
   {
     // Reset the state before starting to parse.
     this.reset();
@@ -360,6 +379,6 @@ export default class CommandParser
     this.assertTerminationState();
 
     // Return the accumulated token array.
-    return this.state.tokens;
+    return {tokens: this.state.tokens, quoteWraps: this.state.quoteWraps};
   }
 }

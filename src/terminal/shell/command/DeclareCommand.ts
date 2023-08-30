@@ -16,12 +16,14 @@ export default class DeclareCommand extends ShellCommand
 
   public constructor()
   {
-    super("declare", "declare [name=value]",
-      "Declares a variable or displays existing variables.", 0, 1);
+    super("declare", "declare [name] [value]",
+      "Declares a variable or displays existing variables.", 0, 2);
   }
 
-  protected override main(shell: Shell, args: string[]): number {
+  protected override main(shell: Shell, args: string[], argQuoteWraps: boolean[]): number {
     const printStream = shell.printStream;
+
+    console.log(args, argQuoteWraps);
 
     if (args.length === 0) {
       for (const key in shell.vars)
@@ -35,21 +37,27 @@ export default class DeclareCommand extends ShellCommand
       return 0;
     }
 
-    const tokens = args[0].split("=");
-
-    if (tokens.length > 2)
+    if (args.length === 1)
     {
-      printStream.errorln("Invalid syntax. The '=' operator should only be used between the name and value.");
-      return 1;
+      shell.vars[args[0]] = "";
+      return 0;
     }
 
-    if (tokens.length === 1)
+    if (argQuoteWraps[1] === true)
     {
-      shell.vars[tokens[0]] = "";
+      shell.vars[args[0]] = args[1];
+      return 0;
+    }
+
+    const numValue = parseInt(args[1], 10);
+
+    if (Number.isNaN(numValue))
+    {
+      shell.vars[args[0]] = args[1];
     }
     else
     {
-      shell.vars[tokens[0]] = tokens[1];
+      shell.vars[args[0]] = numValue;
     }
 
     return 0;

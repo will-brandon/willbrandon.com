@@ -79,15 +79,15 @@ export default abstract class ShellCommand
     return false;
   }
 
-  public exec(shell: Shell, args: string[]): number
+  public exec(shell: Shell, args: string[], argQuoteWraps: boolean[]): number
   {
     // Perform any convenience pre-validation steps and if they fail return an exit code of 1 and don't bother starting
     // the main function.
     if (this.validateArguments(shell, args))
       return 1;
 
-    return this.main(shell, args);
+    return this.main(shell, args, argQuoteWraps);
   }
 
-  protected abstract main(shell: Shell, args: string[]): number;
+  protected abstract main(shell: Shell, args: string[], argQuoteWraps: boolean[]): number;
 }

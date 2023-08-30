@@ -63,7 +63,7 @@ export default class CommandSet
     return true;
   }
 
-  public exec(shell: Shell, name: string, args: string[]): number | undefined
+  public exec(shell: Shell, name: string, args: string[], argQuoteWraps: boolean[]): number | undefined
   {
     const command = this.find(name);
 
@@ -72,6 +72,6 @@ export default class CommandSet
       return undefined;
     }
 
-    return command.exec(shell, args);
+    return command.exec(shell, args, argQuoteWraps);
   }
 }

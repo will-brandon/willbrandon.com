@@ -15,10 +15,11 @@ import ClearCommand from "./command/ClearCommand";
 import {GitHubCommand, LinkedInCommand, ResumeCommand} from "./command/NavigationCommands";
 import ElementPrintStream from "../../util/stream/ElementPrintStream";
 import EchoCommand from "./command/EchoCommand";
-import CommandParser from "./CommandParser";
+import CommandParser, {ParserResult} from "./CommandParser";
 import ManualCommand from "./command/ManualCommand";
 import ColorsCommand from "./command/ColorsCommand";
 import DeclareCommand from "./command/DeclareCommand";
+import UnsetCommand from "./command/UnsetCommand";
 
 /**
  * @description Contains an instance of each command that is recognized by the shell.
@@ -26,6 +27,7 @@ import DeclareCommand from "./command/DeclareCommand";
 const COMMANDS: ShellCommand[] = [
   new ExitCommand(),
   new DeclareCommand(),
+  new UnsetCommand(),
   new ManualCommand(),
   new ColorsCommand(),
   new EchoCommand(),
@@ -132,7 +134,7 @@ export default class Shell
     this.history = [];
 
     // Create a command parser that will be used for each command execution.
-    this.parser = new CommandParser();
+    this.parser = new CommandParser(false);
 
     // Register all the commands.
     this.commandSet.register(...COMMANDS);
@@ -245,12 +247,12 @@ export default class Shell
     }
 
     // Initialize a token array that will be filled with token strings by the parser.
-    let tokens: string[] = [];
+    let parseResult!: ParserResult;
 
     // Try to parse the command string into an array of tokens.
     try
     {
-      tokens = this.parser.parse(command);
+      parseResult = this.parser.parse(command);
     }
     catch (err: any)
     {
@@ -262,7 +264,7 @@ export default class Shell
     }
 
     // If the command was empty return immediately.
-    if (tokens.length === 0)
+    if (parseResult.tokens.length === 0)
     {
       // Return this object for convenience.
       return this;
@@ -271,7 +273,7 @@ export default class Shell
     // Add the command to the history.
     this.history.push(command);
 
-    tokens = tokens.map(token => {
+    const tokens = parseResult.tokens.map(token => {
 
       if (token.charAt(0) !== "$")
         return token;
@@ -284,9 +286,10 @@ export default class Shell
     // Split the tokens into the command (the first token) and the arguments (all subsequent tokens).
     const commandName = tokens[0];
     const commandArgs = tokens.slice(1, tokens.length);
+    const commandArgQuoteWraps = parseResult.quoteWraps.slice(1, tokens.length);
 
     // Try to execute the command.
-    const exitCode = this.commandSet.exec(this, commandName, commandArgs);
+    const exitCode = this.commandSet.exec(this, commandName, commandArgs, commandArgQuoteWraps);
 
     // If the exit code is defined, the command exists in the set. Set the shells last exit code variable to the exit
     // code.

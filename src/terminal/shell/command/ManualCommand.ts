@@ -44,7 +44,7 @@ export default class ManualCommand extends ShellCommand
 
     commandSet.commands.forEach(command => {
       printStream.print("  ");
-      printStream.print(command.usage, StreamColor.DEFAULT, 20);
+      printStream.print(command.usage, StreamColor.DEFAULT, 23);
       printStream.println(command.description);
     });
 
