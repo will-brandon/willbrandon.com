@@ -152,7 +152,7 @@ export default class ElementPrintStream extends ElementStream
   public errorln(str?: string, paddingSize: number = 0, paddingChar: string = " "): ElementPrintStream
   {
     // Print the message in an "error-line" HTML class pre element.
-    this.println(str, StreamColor.RED, paddingSize, paddingChar);
+    this.println(str, StreamColor.DEFAULT, paddingSize, paddingChar);
 
     // Return this object for convenience.
     return this;

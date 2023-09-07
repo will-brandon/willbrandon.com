@@ -116,8 +116,7 @@ const Terminal = (): ReactElement => {
         {
           // If the shell is active display an interactive prompt.
           shell.isActive() ?
-            <Prompt login={shell.login()} historyProvider={history} onChange={scrollToBottom} onExec={exec} />
-            : ""
+            <Prompt login={shell.login()} historyProvider={history} onChange={scrollToBottom} onExec={exec} /> : ""
         }
       </div>
     </div>
