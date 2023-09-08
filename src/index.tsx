@@ -18,10 +18,6 @@ import CommandParser from "./terminal/shell/CommandParser";
 const htmlRootElement = document.getElementById('root') as HTMLDivElement
 const reactRootElement = ReactDOM.createRoot(htmlRootElement);
 
-const p = new CommandParser(true);
-
-//console.log(p.parse("\\n"));
-
 // Render the app in the React root element.
 reactRootElement.render(
   <React.StrictMode>
