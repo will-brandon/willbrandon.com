@@ -79,22 +79,23 @@ export default class ElementPrintStream extends ElementStream
       lines[0] += paddingChar;
     }
 
-    // Add each line to the stream and delimiter them with line breaks,
-    for (let i = 0; i < lines.length; i++)
+    function element(index: number): ReactElement
     {
-      if (color.isDefault())
-      {
-        this.append(<React.Fragment>{lines[i]}</React.Fragment>);
-      }
-      else
-      {
-        this.append(<pre className={color.className}>{lines[i]}</pre>);
-      }
+      return color.isDefault()
+        ? <React.Fragment>{lines[index]}</React.Fragment>
+        : <pre className={color.className}>{lines[index]}</pre>;
+    }
 
-      if (i < lines.length - 1)
-      {
-        this.flush();
-      }
+    // Add each line to the stream and delimiter them with line breaks,
+    for (let i = 0; i < lines.length - 1; i++)
+    {
+      this.append(element(i));
+      this.flush();
+    }
+
+    if (lines[lines.length - 1] !== "")
+    {
+      this.append(element(lines.length - 1));
     }
 
     // Return this object for convenience.
@@ -152,7 +153,7 @@ export default class ElementPrintStream extends ElementStream
   public errorln(str?: string, paddingSize: number = 0, paddingChar: string = " "): ElementPrintStream
   {
     // Print the message in an "error-line" HTML class pre element.
-    this.println(str, StreamColor.DEFAULT, paddingSize, paddingChar);
+    this.println(str, StreamColor.RED, paddingSize, paddingChar);
 
     // Return this object for convenience.
     return this;
