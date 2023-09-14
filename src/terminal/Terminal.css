@@ -49,7 +49,7 @@ div.terminal div.feed div.stream-item div.pane
   font-size: 0px;
 }
 
-div.terminal div.feed div.stream-item pre.line
+div.terminal div.feed div.stream-line pre.line
 {
   display: block;
   padding: 0;

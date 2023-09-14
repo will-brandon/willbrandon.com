@@ -91,11 +91,13 @@ export default class ElementPrintStream extends ElementStream
     {
       this.append(element(i));
       this.flush();
+      console.log(i);
     }
 
     if (lines[lines.length - 1] !== "")
     {
       this.append(element(lines.length - 1));
+      console.log("base");
     }
 
     // Return this object for convenience.

@@ -36,7 +36,6 @@ export default class ManualCommand extends ShellCommand
       printStream.println("\n  Manual", StreamColor.LIGHT_BLUE);
     }
 
-
     if (commandSet.size() > 0)
     {
       printStream.println();
